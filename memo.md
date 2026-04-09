@@ -7,3 +7,6 @@ git push
 
 ##プロジェクトを再開するとき（ターミナルで実行）
 code ~/Desktop/music-explorer
+
+(ローカルホストの起動)
+npm run dev

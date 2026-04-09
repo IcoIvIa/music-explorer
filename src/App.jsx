@@ -1,22 +1,17 @@
-import { useState } from "react";
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
+import HomePage from './pages/HomePage'
+import DigPage from './pages/DigPage'
+import FavoritesPage from './pages/FavoritesPage'
 
 function App() {
-  const[query, setQuery] = useState('')
-
-  function handleSearch() {
-    console.log('検索',query)
-  }
-
   return (
-    <div>
-    <h1>Music Explorer</h1>
-    <input type="text"
-    placeholder="アーティスト名を入力"// ヒント文字を入れる、デザインを見て削除も可
-    value={query}
-    onChange={(e) => setQuery(e.target.value)}
-     />
-     <button onClick={handleSearch}>検索</button>
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route path='/' element={<HomePage />} />
+        <Route path='/dig' element={<DigPage />} />
+        <Route path='/favorites' element={<FavoritesPage />} />
+      </Routes>
+    </BrowserRouter>
   )
 }
 
