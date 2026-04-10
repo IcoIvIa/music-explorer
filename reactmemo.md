@@ -75,3 +75,22 @@ function App() {
         [1, 2, 3].map((num) => num * 2)
         // → [2, 4, 6]
         配列の中身を1つずつ取り出して、何かに変換した新しい配列を返します。
+
+        ##三項演算子（JSでもある
+          // 10層目までは黒字、11層目以降は白字
+          const textColor = depth <= 13 ? '#1a0f2e' : '#f3e8ff'
+          const textColorMuted = depth <= 13 ? 'rgba(26,15,46,0.5)' : 'rgba(243,232,255,0.4)'
+
+          return { bg, shadow1: shadowDark, shadow2: shadowLight, textColor, textColorMuted }
+          }
+
+          // 三項演算子　条件が複雑になると読みにくくなるのでIFと使いわけるといい。
+          const textColor = depth <= 13 ? '#1a0f2e' : '#f3e8ff'
+
+          // if文で書いた場合（同じ意味）
+          let textColor
+          if (depth <= 13) {
+          textColor = '#1a0f2e'
+          } else {
+          textColor = '#f3e8ff'
+          }

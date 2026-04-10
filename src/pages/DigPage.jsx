@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
+import DetailPanel from '../components/DetailPanel/DetailPanel'
 
 const dummyArtists = [
   { id: 1, name: 'Olivia Rodrigo', genre: 'Pop' },
@@ -7,12 +8,14 @@ const dummyArtists = [
   { id: 3, name: 'Ariana Grande', genre: 'Pop / R&B' },
 ]
 
+
+
 /**
  * 層が深くなるほど背景が濃くなるように色を計算する関数
- * @param {DigPage から渡される階層番号。1層目、2層目…のように扱う。} depth 
+ * @param {DigPage から渡される階層番号。1層目、2層目のように扱う。} depth 
  * depthはfunction DigPageで分割代入した値、階層のよう扱う
  * maxDepth = は最深部の色。色が変わらないようにする上限値
- * progress = 色の計算に使うためdepthを0から1以下の数字に変換。
+ * progress = depthをRGB値に変換する。RGBが扱える値にするため0から1以下の数字に変換。
  * if (progress < 0.5) 前半：浅い紫 → 明るい紫
  * else 後半：明るい紫 → 深い藍紫
  * const bg 以下　影の生成
@@ -21,11 +24,12 @@ const dummyArtists = [
  * shadow1: "rgb(...)",暗い影
  * shadow2: "rgb(...)" 明るい影
  */
-function getTheme(depth) {
+function getlayerColor(depth) {
   const maxDepth = 20
   const progress = Math.min((depth - 1) / maxDepth, 1)
 
   let r, g, b
+
   if (progress < 0.5) {
     const t = progress / 0.5
     r = Math.round(236 - (236 - 192) * t)
@@ -33,24 +37,34 @@ function getTheme(depth) {
     b = Math.round(240 + (240 - 252) * t)
   } else {
     const t = (progress - 0.5) / 0.5
-    r = Math.round(192 - (192 - 6)  * t)
-    g = Math.round(132 - (132 - 3)  * t)
+    r = Math.round(192 - (192 - 6) * t)
+    g = Math.round(132 - (132 - 3) * t)
     b = Math.round(252 - (252 - 24) * t)
   }
+
   const bg = `rgb(${r},${g},${b})`
-  const shadowDark  = `rgb(${Math.max(r-25,0)},${Math.max(g-20,0)},${Math.max(b-35,0)})`
-  const shadowLight = `rgb(${Math.min(r+25,255)},${Math.min(g+20,255)},${Math.min(b+35,255)})`
+  const shadowDark = `rgb(${Math.max(r - 25, 0)},${Math.max(g - 20, 0)},${Math.max(b - 35, 0)})`
+  const shadowLight = `rgb(${Math.min(r + 25, 255)},${Math.min(g + 20, 255)},${Math.min(b + 35, 255)})`
 
-  return { bg, shadow1: shadowDark, shadow2: shadowLight }
+  // 10層目までは黒字、11層目以降は白字
+  const textColor = depth <= 13 ? '#1a0f2e' : '#f3e8ff'
+  const textColorMuted = depth <= 13 ? 'rgba(26,15,46,0.5)' : 'rgba(243,232,255,0.4)'
+
+  return { bg, shadow1: shadowDark, shadow2: shadowLight, textColor, textColorMuted }
 }
-
 /**
  *  背景の飾りつけの用。svgの波線を生成して層ごと区切ることで地層みたいにする
  * @param {*} param0 
+ * function getlayerColorがリターンした値をconst layerColorに代入。layerColor.bgで背景色をとりだして、colorTop={layerColor.bg} として渡す。
+ * const nextlayerColor = getlayerColor(layer.depth + 1)　で取得した値（次の断層の色）をcolorBottom={nextlayerColor.bg}で代入して引数で渡す
+ * 
  
  * <svg　viewBox***  描画領域等を設定
  * <path d=**** 上部に波線、下部に直線をつくりその間を塗りつぶす。
+ * * <path d=*** 波形のベジェ曲線（C240,60...）で波を描き、
+*    L1440,60 L0,60 Z で下部を直線で閉じて塗りつぶす
  * @returns 
+ * SVG要素
  */
 function WaveDivider({ colorTop, colorBottom }) {
   return (
@@ -71,24 +85,32 @@ function WaveDivider({ colorTop, colorBottom }) {
 function DigPage() {
   const [searchParams] = useSearchParams()
   const artistName = searchParams.get('artist')
+  const [selectedArtist, setSelectedArtist] = useState(null)
   const [layers, setLayers] = useState([
     { depth: 1, artists: dummyArtists }
   ])
 
 
-/**
- * アーティストカードがクリックされたときの処理
- * @param {*} clickedArtist 
- * 現在のlayersに次の階層（depth: layers.length + 1）のアーティスト情報を追加
- */
-  function handleArtistClick(clickedArtist) {
-    setLayers([
-      ...layers,
-      { depth: layers.length + 1, artists: dummyArtists }
-    ])
-  }
+  /**
+   * アーティストカードがクリックされたときの処理
+   * @param {*} clickedArtist 
+   * 現在のlayersに次の階層（depth: layers.length + 1）のアーティスト情報を追加
+   */
+function handleArtistClick(clickedArtist) {
+  setSelectedArtist(clickedArtist) // 選択中のアーティストを更新
+  setLayers([
+    ...layers,
+    { depth: layers.length + 1, artists: dummyArtists }
+  ])
+}
 
   return (
+
+  <div className="flex min-h-screen" style={{ background: '#0d0820' }}>
+
+    {/* 左エリア（探索） */}
+    <div className="flex-1 overflow-y-auto">
+
     <div style={{ background: '#0d0820' }}>
 
       {/* ヘッダー */}
@@ -123,21 +145,24 @@ function DigPage() {
 
       {/* 層の一覧 */}
       {layers.map((layer, index) => {
-        const theme = getTheme(layer.depth)
-        const nextTheme = getTheme(layer.depth + 1)
+        const layerColor = getlayerColor(layer.depth)
+        const nextlayerColor = getlayerColor(layer.depth + 1)
 
         return (
+
+
+          
           <div key={layer.depth}>
 
             {/* 層のコンテンツ */}
             <div
               className="px-6 py-8"
-              style={{ background: theme.bg }}
+              style={{ background: layerColor.bg }}
             >
               {/* 層ラベル */}
               <p
                 className="text-xs tracking-widest mb-4"
-                style={{ color: 'rgba(243,232,255,0.4)' }}
+                style={{ color: layerColor.textColorMuted }}
               >
                 {layer.depth}層目
               </p>
@@ -150,18 +175,18 @@ function DigPage() {
                     onClick={() => handleArtistClick(artist)}
                     className="flex items-center gap-3 px-4 py-3 rounded-2xl text-left transition-all"
                     style={{
-                      background: theme.bg,
+                      background: layerColor.bg,
                       minWidth: '160px',
-                      boxShadow: `4px 4px 10px ${theme.shadow1}, -4px -4px 10px ${theme.shadow2}`
+                      boxShadow: `4px 4px 10px ${layerColor.shadow1}, -4px -4px 10px ${layerColor.shadow2}`
                     }}
                   >
                     {/* アバター */}
                     <div
                       className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
                       style={{
-                        background: theme.bg,
+                        background: layerColor.bg,
                         color: '#f9a8d4',
-                        boxShadow: `inset 2px 2px 5px ${theme.shadow1}, inset -2px -2px 5px ${theme.shadow2}`
+                        boxShadow: `inset 2px 2px 5px ${layerColor.shadow1}, inset -2px -2px 5px ${layerColor.shadow2}`
                       }}
                     >
                       {artist.name.slice(0, 2).toUpperCase()}
@@ -169,10 +194,10 @@ function DigPage() {
 
                     {/* アーティスト情報 */}
                     <div>
-                      <p className="text-sm font-medium" style={{ color: '#f3e8ff' }}>
+                      <p className="text-sm font-medium" style={{ color: layerColor.textColor }}>
                         {artist.name}
                       </p>
-                      <p className="text-xs" style={{ color: 'rgba(243,232,255,0.4)' }}>
+                      <p className="text-xs" style={{ color: layerColor.textColorMuted }}>
                         {artist.genre}
                       </p>
                     </div>
@@ -182,10 +207,10 @@ function DigPage() {
             </div>
 
             {/* 波形の区切り */}
-            <div style={{ background: theme.bg }}>
+            <div style={{ background: layerColor.bg }}>
               <WaveDivider
-                colorTop={theme.bg}
-                colorBottom={nextTheme.bg}
+                colorTop={layerColor.bg}
+                colorBottom={nextlayerColor.bg}
               />
             </div>
 
@@ -205,7 +230,17 @@ function DigPage() {
       </div>
 
     </div>
-  )
-}
+
+    </div>
+
+    {/* 右エリア（詳細パネル） */}
+    <div className="w-80 p-6 sticky top-0 h-screen">
+      <DetailPanel artist={selectedArtist} />
+    </div>
+
+  </div>
+
+  )}
+
 
 export default DigPage

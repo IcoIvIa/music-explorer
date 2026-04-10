@@ -9,4 +9,5 @@ git push
 code ~/Desktop/music-explorer
 
 (ローカルホストの起動)
+cd  でプロジェクトがあるディレクトリに移動して、
 npm run dev
