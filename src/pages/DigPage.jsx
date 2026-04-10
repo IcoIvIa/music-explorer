@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import DetailPanel from '../components/DetailPanel/DetailPanel'
 import useFavorites from '../hooks/useFavorites'
@@ -92,17 +92,50 @@ function DigPage() {
   const [searchParams] = useSearchParams()
   const artistName = searchParams.get('artist')
   const [selectedArtist, setSelectedArtist] = useState(null)
-  const [layers, setLayers] = useState([
-    { depth: 1, artists: dummyArtists }
-  ])
+  const [layers, setLayers] = useState([])
   const { addFavorite, isFavorite } = useFavorites()
+
+  useEffect(()=> {
+    async function loadFirstLayer() {
+      
+    setSelectedArtist({
+      name: artistName,
+      genre: '',
+      image: ''
+    })
+
+      const artists = await getSimilarArtists(artistName)
+
+          // 検索アーティストを初期表示にセット
+
+
+// for debug
+    console.log('artistName:', artistName) 
+    console.log('artists:', artists) 
+ // end
+
+      const formattedArtists = artists.map((artist,index) => ({
+        id: index,
+        name: artist.name,
+        genre: '',
+        image: artist.image[2]['#text']
+      }))
+      setLayers([{ depth: 1, artists: formattedArtists }])
+    }
+    loadFirstLayer()
+  },[artistName])
 
 
   /**
-   * アーティストカードがクリックされたときの処理をするコンポーネント
-   * setSelectedArtist(clickedArtist) // 選択中のアーティストを更新
+   * アーティストカードがクリックされたときの処理をする関数
+   * setSelectedArtist(clickedArtist) 選択中のアーティストを更新
    * const similarArtists = await getSimilarArtists(clickedArtist.name)  Last.fm APIから関連アーティストを取得
-   * @param {*} clickedArtist 
+   * const formattedArtists Last.fmから返ってきたデータを.mapで使いやすい配列に変換
+   * id: index,        // mapのindex番号をIDとして使う。アーティストの読み込み順番を管理する（depthとは別扱い。depthは背景等の描画で使用する）
+   * name: artist.name, // アーティスト名をそのまま使う
+   * genre: '',         // Last.fmはジャンルを返さないので空文字（余裕があれば実装）
+   * image: artist.image[2]['#text'] // large画像のURLを取り出す
+   * @param {object} clickedArtist 
    * 現在のlayersに次の階層（depth: layers.length + 1）のアーティスト情報を追加
    */
 async function handleArtistClick(clickedArtist) {
