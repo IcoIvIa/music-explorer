@@ -63,7 +63,7 @@ function getlayerColor(depth) {
  
  * <svg　viewBox***  描画領域等を設定
  * <path d=**** 上部に波線、下部に直線をつくりその間を塗りつぶす。
- * * <path d=*** 波形のベジェ曲線（C240,60...）で波を描き、
+ * * <path d=*** 波形のベジェ曲線（C240,60　以下続く）で波を描き、
 *    L1440,60 L0,60 Z で下部を直線で閉じて塗りつぶす
  * @returns 
  * SVG要素
@@ -110,8 +110,8 @@ function DigPage() {
 
 
 // for debug
-    console.log('artistName:', artistName) 
-    console.log('artists:', artists) 
+    // console.log('artistName:', artistName) 
+    // console.log('artists:', artists) 
  // end
 
       const formattedArtists = artists.map((artist,index) => ({

@@ -32,7 +32,7 @@ function HomePage() {
         MUSIC EXPLORATION
       </p>
 
-      {/* 検索バー（凹みニューモーフィズム） */}
+      {/* 検索バー */}
       <div
         className="flex w-full max-w-md rounded-2xl px-4 py-2 gap-2"
         style={{
@@ -50,7 +50,7 @@ function HomePage() {
           style={{ color: '#f3e8ff' }}
         />
 
-        {/* DIGボタン（浮きニューモーフィズム） */}
+        {/* DIGボタン */}
         <button
           onClick={handleSearch}
           className="text-xs font-bold tracking-widest px-5 py-2 rounded-xl transition-all"
