@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import DetailPanel from '../components/DetailPanel/DetailPanel'
+import useFavorites from '../hooks/useFavorites'
 
 const dummyArtists = [
   { id: 1, name: 'Olivia Rodrigo', genre: 'Pop' },
@@ -12,7 +13,7 @@ const dummyArtists = [
 
 /**
  * 層が深くなるほど背景が濃くなるように色を計算する関数
- * @param {DigPage から渡される階層番号。1層目、2層目のように扱う。} depth 
+ * @param {num} depth DigPage から渡される階層番号。1層目、2層目のように扱う。
  * depthはfunction DigPageで分割代入した値、階層のよう扱う
  * maxDepth = は最深部の色。色が変わらないようにする上限値
  * progress = depthをRGB値に変換する。RGBが扱える値にするため0から1以下の数字に変換。
@@ -46,16 +47,16 @@ function getlayerColor(depth) {
   const shadowDark = `rgb(${Math.max(r - 25, 0)},${Math.max(g - 20, 0)},${Math.max(b - 35, 0)})`
   const shadowLight = `rgb(${Math.min(r + 25, 255)},${Math.min(g + 20, 255)},${Math.min(b + 35, 255)})`
 
-  // 10層目までは黒字、11層目以降は白字
+  // 13層目までは黒字、14層目以降は白字。3項演算子で判断
   const textColor = depth <= 13 ? '#1a0f2e' : '#f3e8ff'
   const textColorMuted = depth <= 13 ? 'rgba(26,15,46,0.5)' : 'rgba(243,232,255,0.4)'
 
   return { bg, shadow1: shadowDark, shadow2: shadowLight, textColor, textColorMuted }
 }
 /**
- *  背景の飾りつけの用。svgの波線を生成して層ごと区切ることで地層みたいにする
+ *  背景の飾りつけ用関数。svgの波線を生成して層ごと区切ることで地層みたいにする
  * @param {*} param0 
- * function getlayerColorがリターンした値をconst layerColorに代入。layerColor.bgで背景色をとりだして、colorTop={layerColor.bg} として渡す。
+ * function getlayerColorがリターンした値({ bg, shadow1: shadowDark, shadow2: shadowLight, textColor, textColorMuted })をconst layerColorに代入。layerColor.bgで背景色をとりだして、colorTop={layerColor.bg} として渡す。
  * const nextlayerColor = getlayerColor(layer.depth + 1)　で取得した値（次の断層の色）をcolorBottom={nextlayerColor.bg}で代入して引数で渡す
  * 
  
@@ -82,6 +83,10 @@ function WaveDivider({ colorTop, colorBottom }) {
   )
 }
 
+/**
+ * 階層追加用コンポーネント
+ * @returns 
+ */
 function DigPage() {
   const [searchParams] = useSearchParams()
   const artistName = searchParams.get('artist')
@@ -89,10 +94,11 @@ function DigPage() {
   const [layers, setLayers] = useState([
     { depth: 1, artists: dummyArtists }
   ])
+  const { addFavorite, isFavorite } = useFavorites()
 
 
   /**
-   * アーティストカードがクリックされたときの処理
+   * アーティストカードがクリックされたときの処理をするコンポーネント
    * @param {*} clickedArtist 
    * 現在のlayersに次の階層（depth: layers.length + 1）のアーティスト情報を追加
    */
@@ -235,12 +241,15 @@ function handleArtistClick(clickedArtist) {
 
     {/* 右エリア（詳細パネル） */}
     <div className="w-80 p-6 sticky top-0 h-screen">
-      <DetailPanel artist={selectedArtist} />
+      <DetailPanel artist={selectedArtist} 
+          onAddFavoriteArtist={addFavorite}
+    isFavorite={isFavorite}
+    />
     </div>
 
   </div>
 
   )}
-
+{/*function DigPage終わり*/}
 
 export default DigPage
