@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import DetailPanel from '../components/DetailPanel/DetailPanel'
 import useFavorites from '../hooks/useFavorites'
+import { searchArtist, getSimilarArtists } from '../services/lastfm'
 
 const dummyArtists = [
   { id: 1, name: 'Olivia Rodrigo', genre: 'Pop' },
@@ -99,14 +100,29 @@ function DigPage() {
 
   /**
    * アーティストカードがクリックされたときの処理をするコンポーネント
+   * setSelectedArtist(clickedArtist) // 選択中のアーティストを更新
+   * const similarArtists = await getSimilarArtists(clickedArtist.name)  Last.fm APIから関連アーティストを取得
    * @param {*} clickedArtist 
    * 現在のlayersに次の階層（depth: layers.length + 1）のアーティスト情報を追加
    */
-function handleArtistClick(clickedArtist) {
+async function handleArtistClick(clickedArtist) {
   setSelectedArtist(clickedArtist) // 選択中のアーティストを更新
+
+  const similarArtists = await getSimilarArtists(clickedArtist.name)
+  const formattedArtists = similarArtists.map((artist,index) => ({
+    id: index,
+    name: artist.name,
+    genre: '',
+    image: artist.image[2]['#text']
+  }))
+
+  //動作確認用
+  // const similarArtists = await getSimilarArtists(clickedArtist.name)
+  // console.log(`関連アーティスト`,similarArtists)
+
   setLayers([
     ...layers,
-    { depth: layers.length + 1, artists: dummyArtists }
+    { depth: layers.length + 1, artists: formattedArtists }
   ])
 }
 
