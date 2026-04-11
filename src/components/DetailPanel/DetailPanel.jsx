@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import { getTopTracks } from '../../services/lastfm'
+import { getPreviewUrl } from '../../services/itunes'
 
 /**
  * 選択中のアーティストの詳細を表示するコンポーネント
@@ -8,7 +9,7 @@ import { getTopTracks } from '../../services/lastfm'
  * @param {function} isFavorite お気に入りかどうか確認する関数
  */
 
-function DetailPanel({ artist, onAddFavoriteArtist, isFavorite }) {
+function DetailPanel({ artist, onAddFavoriteArtist, isFavorite ,onTrackSelect }) {
   const [topTracks, setTopTracks] = useState([])
 
   useEffect(() => {
@@ -24,6 +25,15 @@ console.log('tracks:',tracks)
   },[artist])
 
   if (!artist) return null
+
+  async function  handleTrackClick(trackName) {
+    const previewUrl = await getPreviewUrl(trackName,artist.name)
+    onTrackSelect({
+            name: trackName,
+      artistName: artist.name,
+      previewUrl
+    })
+  }
 
   return (
     <div
@@ -45,6 +55,7 @@ console.log('tracks:',tracks)
       {artist.name.slice(0,2).toUpperCase()}
       </div>
 
+{/* アーティスト名 */}
       <div>
         <p
         className='text-lg font-bold tracking-wide'
@@ -57,7 +68,7 @@ console.log('tracks:',tracks)
           {/* 人気曲一覧 */}
           <div className="flex flex-col gap-2">
             <p
-            className="text-xs traking-widest md-1"
+            className="text-xs tracking-widest mb-1"
             style={{ color: 'rgba(243,232,255,0.4)'}}
             >
               人気曲
@@ -68,9 +79,10 @@ console.log('tracks:',tracks)
               </p>
             ) : (
              topTracks.map((track, index) => (
-              <div
+              <button
               key={index}
-              className="flex items-center gap-3 px-4 py-3 rounded-xl"
+              onClick={()=> handleTrackClick(track.name)}
+              className="flex items-center gap-3 px-4 py-3 rounded-xl text-left"
                 style={{
                   background:'#2d1b69',
                   boxShadow: '3px 3px 8px #1a0f3e, -3px -3px 8px #3d2882'
@@ -87,8 +99,11 @@ console.log('tracks:',tracks)
                   style={{ color: '#f3e8ff'}}
                   >
                     {track.name}
-                  </span>
-                  </div>
+                    </span>
+              <span className="text-xs ml-auto" style={{ color: 'rgba(243,232,255,0.3)' }}>
+                ▶
+              </span>
+            </button>
               ))
             )}
             </div>

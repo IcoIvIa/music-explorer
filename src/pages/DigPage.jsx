@@ -4,6 +4,7 @@ import DetailPanel from '../components/DetailPanel/DetailPanel'
 import useFavorites from '../hooks/useFavorites'
 import { searchArtist, getSimilarArtists } from '../services/lastfm'
 import FavoritesModal from '../components/FavoritesModal/FavoritesModal'
+import AudioPlayer from '../components/AudioPlayer/AudioPlayer'
 
 const dummyArtists = [
   { id: 1, name: 'Olivia Rodrigo', genre: 'Pop' },
@@ -97,6 +98,7 @@ function DigPage() {
   const { favorites, addFavorite, removeFavorite, isFavorite } = useFavorites()
   const [isFavoritesOpen, setIsFavoritesOpen] = useState(false)
   const [explorationHistory, setExplorationHistory] = useState([])
+  const [currentTrack, setCurrentTrack] = useState(null)
 
   useEffect(() => {
     async function loadFirstLayer() {
@@ -332,13 +334,19 @@ function DigPage() {
 
       {/* 右エリア（詳細パネル） */}
       <div className="w-80 p-6 sticky top-0 h-screen">
-        <DetailPanel artist={selectedArtist}
+        <DetailPanel 
+        artist={selectedArtist}
           onAddFavoriteArtist={addFavorite}
           isFavorite={isFavorite}
+          onTrackSelect={setCurrentTrack}
         />
       </div>
-
+    <AudioPlayer
+    currentTrack={currentTrack}
+    onClose={() => setCurrentTrack(null)}
+    />
     </div>
+
 
   )
 }
