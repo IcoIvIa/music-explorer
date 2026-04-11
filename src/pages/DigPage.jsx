@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom'
 import DetailPanel from '../components/DetailPanel/DetailPanel'
 import useFavorites from '../hooks/useFavorites'
 import { searchArtist, getSimilarArtists } from '../services/lastfm'
+import FavoritesModal from '../components/FavoritesModal/FavoritesModal'
 
 const dummyArtists = [
   { id: 1, name: 'Olivia Rodrigo', genre: 'Pop' },
@@ -93,28 +94,29 @@ function DigPage() {
   const artistName = searchParams.get('artist')
   const [selectedArtist, setSelectedArtist] = useState(null)
   const [layers, setLayers] = useState([])
-  const { addFavorite, isFavorite } = useFavorites()
+  const { favorites, addFavorite, removeFavorite, isFavorite } = useFavorites()
+  const [isFavoritesOpen, setIsFavoritesOpen] = useState(false)
 
-  useEffect(()=> {
+  useEffect(() => {
     async function loadFirstLayer() {
-      
-    setSelectedArtist({
-      name: artistName,
-      genre: '',
-      image: ''
-    })
+
+      setSelectedArtist({
+        name: artistName,
+        genre: '',
+        image: ''
+      })
 
       const artists = await getSimilarArtists(artistName)
 
-          // 検索アーティストを初期表示にセット
+      // 検索アーティストを初期表示にセット
 
 
-// for debug
-    // console.log('artistName:', artistName) 
-    // console.log('artists:', artists) 
- // end
+      // for debug
+      // console.log('artistName:', artistName) 
+      // console.log('artists:', artists) 
+      // end
 
-      const formattedArtists = artists.map((artist,index) => ({
+      const formattedArtists = artists.map((artist, index) => ({
         id: index,
         name: artist.name,
         genre: '',
@@ -123,7 +125,7 @@ function DigPage() {
       setLayers([{ depth: 1, artists: formattedArtists }])
     }
     loadFirstLayer()
-  },[artistName])
+  }, [artistName])
 
 
   /**
@@ -138,167 +140,201 @@ function DigPage() {
    * @param {object} clickedArtist 
    * 現在のlayersに次の階層（depth: layers.length + 1）のアーティスト情報を追加
    */
-async function handleArtistClick(clickedArtist) {
-  setSelectedArtist(clickedArtist) // 選択中のアーティストを更新
+  async function handleArtistClick(clickedArtist) {
+    setSelectedArtist(clickedArtist) // 選択中のアーティストを更新
 
-  const similarArtists = await getSimilarArtists(clickedArtist.name)
-  const formattedArtists = similarArtists.map((artist,index) => ({
-    id: index,
-    name: artist.name,
-    genre: '',
-    image: artist.image[2]['#text']
-  }))
+    const similarArtists = await getSimilarArtists(clickedArtist.name)
+    const formattedArtists = similarArtists.map((artist, index) => ({
+      id: index,
+      name: artist.name,
+      genre: '',
+      image: artist.image[2]['#text']
+    }))
 
-  //動作確認用
-  // const similarArtists = await getSimilarArtists(clickedArtist.name)
-  // console.log(`関連アーティスト`,similarArtists)
+    //動作確認用
+    // const similarArtists = await getSimilarArtists(clickedArtist.name)
+    // console.log(`関連アーティスト`,similarArtists)
 
-  setLayers([
-    ...layers,
-    { depth: layers.length + 1, artists: formattedArtists }
-  ])
-}
+    setLayers([
+      ...layers,
+      { depth: layers.length + 1, artists: formattedArtists }
+    ])
+  }
 
   return (
 
-  <div className="flex min-h-screen" style={{ background: '#0d0820' }}>
+    <div className="flex min-h-screen" style={{ background: '#0d0820' }}>
 
-    {/* 左エリア（探索） */}
-    <div className="flex-1 overflow-y-auto">
+      {/* モーダル */}
+      <FavoritesModal
+      isOpen={isFavoritesOpen}
+      onClose={() => setIsFavoritesOpen(false)}
+      favorites={favorites}
+      removeFavorite={removeFavorite}
+      />
 
-    <div style={{ background: '#0d0820' }}>
+      {/* 左エリア（探索） */}
+      <div className="flex-1 overflow-y-auto">
 
-      {/* ヘッダー */}
-      <div
-        className="px-6 pt-10 pb-6"
-        style={{ background: '#5b21b6' }}
-      >
-        <div className="flex items-center justify-between mb-4">
-          <h1
-            className="text-2xl font-bold tracking-widest"
-            style={{ color: '#f3e8ff', textShadow: '0 0 20px rgba(243,232,255,0.3)' }}
-          >
-            DIG<span style={{ color: '#f9a8d4' }}>GER</span>
-          </h1>
+        <div style={{ background: '#0d0820' }}>
+
+          {/* ヘッダー */}
           <div
-            className="text-xs tracking-widest px-4 py-2 rounded-full"
-            style={{
-              background: '#4c1d95',
-              color: '#bef264',
-              boxShadow: '3px 3px 8px #4c1d95, -3px -3px 8px #6d28d9'
-            }}
+            className="px-6 pt-10 pb-6"
+            style={{ background: '#5b21b6' }}
           >
-            {layers.length}層目を掘削中
-          </div>
-        </div>
-        <p className="text-xs tracking-widest"
-          style={{ color: 'rgba(243,232,255,0.5)' }}
-        >
-          {artistName}を探索中
-        </p>
-      </div>
-
-      {/* 層の一覧 */}
-      {layers.map((layer, index) => {
-        const layerColor = getlayerColor(layer.depth)
-        const nextlayerColor = getlayerColor(layer.depth + 1)
-
-        return (
-
-
-          
-          <div key={layer.depth}>
-
-            {/* 層のコンテンツ */}
-            <div
-              className="px-6 py-8"
-              style={{ background: layerColor.bg }}
-            >
-              {/* 層ラベル */}
-              <p
-                className="text-xs tracking-widest mb-4"
-                style={{ color: layerColor.textColorMuted }}
+            <div className="flex items-center justify-between mb-4">
+              <h1
+                className="text-2xl font-bold tracking-widest"
+                style={{ color: '#f3e8ff', textShadow: '0 0 20px rgba(243,232,255,0.3)' }}
               >
-                {layer.depth}層目
-              </p>
+                DIG<span style={{ color: '#f9a8d4' }}>GER</span>
+              </h1>
+              <div
+                className="text-xs tracking-widest px-4 py-2 rounded-full"
+                style={{
+                  background: '#4c1d95',
+                  color: '#bef264',
+                  boxShadow: '3px 3px 8px #4c1d95, -3px -3px 8px #6d28d9'
+                }}
+              >
 
-              {/* アーティストカード */}
-              <div className="flex gap-3 flex-wrap">
-                {layer.artists.map((artist) => (
+                <div className="flex items-center gap-3">
+                  {/* お気に入りボタン */}
                   <button
-                    key={artist.id}
-                    onClick={() => handleArtistClick(artist)}
-                    className="flex items-center gap-3 px-4 py-3 rounded-2xl text-left transition-all"
+                    onClick={() => setIsFavoritesOpen(true)}
+                    className="text-xs tracking-widest px-4 py-2 rounded-full"
                     style={{
-                      background: layerColor.bg,
-                      minWidth: '160px',
-                      boxShadow: `4px 4px 10px ${layerColor.shadow1}, -4px -4px 10px ${layerColor.shadow2}`
+                      background: '#4c1d95',
+                      color: '#fde68a',
+                      boxShadow: '3px 3px 8px #4c1d95, -3px -3px 8px #6d28d9'
                     }}
                   >
-                    {/* アバター */}
-                    <div
-                      className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
-                      style={{
-                        background: layerColor.bg,
-                        color: '#f9a8d4',
-                        boxShadow: `inset 2px 2px 5px ${layerColor.shadow1}, inset -2px -2px 5px ${layerColor.shadow2}`
-                      }}
-                    >
-                      {artist.name.slice(0, 2).toUpperCase()}
-                    </div>
-
-                    {/* アーティスト情報 */}
-                    <div>
-                      <p className="text-sm font-medium" style={{ color: layerColor.textColor }}>
-                        {artist.name}
-                      </p>
-                      <p className="text-xs" style={{ color: layerColor.textColorMuted }}>
-                        {artist.genre}
-                      </p>
-                    </div>
+                    ★ お気に入り
                   </button>
-                ))}
+
+                  {/* 層バッジ */}
+                  <div
+                    style={{
+                      background: '#4c1d95',
+                      color: '#bef264',
+                      boxShadow: '3px 3px 8px #4c1d95, -3px -3px 8px #6d28d9'
+                    }}
+                  >
+                    {layers.length}層目を掘削中
+                  </div>
+                </div>
               </div>
             </div>
-
-            {/* 波形の区切り */}
-            <div style={{ background: layerColor.bg }}>
-              <WaveDivider
-                colorTop={layerColor.bg}
-                colorBottom={nextlayerColor.bg}
-              />
-            </div>
-
+            <p className="text-xs tracking-widest"
+              style={{ color: 'rgba(243,232,255,0.5)' }}
+            >
+              {artistName}を探索中
+            </p>
           </div>
-        )
-      })}
 
-      {/* 最下部 */}
-      <div className="px-6 py-12 text-center"
-        style={{ background: '#0d0820' }}
-      >
-        <p className="text-xs tracking-widest"
-          style={{ color: 'rgba(243,232,255,0.2)' }}
-        >
-          さらに深く掘り下げよう
-        </p>
+          {/* 層の一覧 */}
+          {layers.map((layer, index) => {
+            const layerColor = getlayerColor(layer.depth)
+            const nextlayerColor = getlayerColor(layer.depth + 1)
+
+            return (
+
+
+
+              <div key={layer.depth}>
+
+                {/* 層のコンテンツ */}
+                <div
+                  className="px-6 py-8"
+                  style={{ background: layerColor.bg }}
+                >
+                  {/* 層ラベル */}
+                  <p
+                    className="text-xs tracking-widest mb-4"
+                    style={{ color: layerColor.textColorMuted }}
+                  >
+                    {layer.depth}層目
+                  </p>
+
+                  {/* アーティストカード */}
+                  <div className="flex gap-3 flex-wrap">
+                    {layer.artists.map((artist) => (
+                      <button
+                        key={artist.id}
+                        onClick={() => handleArtistClick(artist)}
+                        className="flex items-center gap-3 px-4 py-3 rounded-2xl text-left transition-all"
+                        style={{
+                          background: layerColor.bg,
+                          minWidth: '160px',
+                          boxShadow: `4px 4px 10px ${layerColor.shadow1}, -4px -4px 10px ${layerColor.shadow2}`
+                        }}
+                      >
+                        {/* アバター */}
+                        <div
+                          className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
+                          style={{
+                            background: layerColor.bg,
+                            color: '#f9a8d4',
+                            boxShadow: `inset 2px 2px 5px ${layerColor.shadow1}, inset -2px -2px 5px ${layerColor.shadow2}`
+                          }}
+                        >
+                          {artist.name.slice(0, 2).toUpperCase()}
+                        </div>
+
+                        {/* アーティスト情報 */}
+                        <div>
+                          <p className="text-sm font-medium" style={{ color: layerColor.textColor }}>
+                            {artist.name}
+                          </p>
+                          <p className="text-xs" style={{ color: layerColor.textColorMuted }}>
+                            {artist.genre}
+                          </p>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+
+                {/* 波形の区切り */}
+                <div style={{ background: layerColor.bg }}>
+                  <WaveDivider
+                    colorTop={layerColor.bg}
+                    colorBottom={nextlayerColor.bg}
+                  />
+                </div>
+
+              </div>
+            )
+          })}
+
+          {/* 最下部 */}
+          <div className="px-6 py-12 text-center"
+            style={{ background: '#0d0820' }}
+          >
+            <p className="text-xs tracking-widest"
+              style={{ color: 'rgba(243,232,255,0.2)' }}
+            >
+              さらに深く掘り下げよう
+            </p>
+          </div>
+
+        </div>
+
+      </div>
+
+      {/* 右エリア（詳細パネル） */}
+      <div className="w-80 p-6 sticky top-0 h-screen">
+        <DetailPanel artist={selectedArtist}
+          onAddFavoriteArtist={addFavorite}
+          isFavorite={isFavorite}
+        />
       </div>
 
     </div>
 
-    </div>
-
-    {/* 右エリア（詳細パネル） */}
-    <div className="w-80 p-6 sticky top-0 h-screen">
-      <DetailPanel artist={selectedArtist} 
-          onAddFavoriteArtist={addFavorite}
-    isFavorite={isFavorite}
-    />
-    </div>
-
-  </div>
-
-  )}
-{/*function DigPage終わり*/}
+  )
+}
+{/*function DigPage終わり*/ }
 
 export default DigPage
