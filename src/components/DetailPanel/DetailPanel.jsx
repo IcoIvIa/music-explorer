@@ -15,6 +15,9 @@ function DetailPanel({ artist, onAddFavoriteArtist, isFavorite }) {
     async function loadTopTracks() {
       if (!artist) return
       const tracks = await getTopTracks(artist.name)
+//for debug
+console.log('tracks:',tracks)
+//end
       setTopTracks(tracks)
     }
     loadTopTracks()

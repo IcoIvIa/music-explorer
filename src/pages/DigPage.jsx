@@ -96,6 +96,7 @@ function DigPage() {
   const [layers, setLayers] = useState([])
   const { favorites, addFavorite, removeFavorite, isFavorite } = useFavorites()
   const [isFavoritesOpen, setIsFavoritesOpen] = useState(false)
+  const [explorationHistory, setExplorationHistory] = useState([])
 
   useEffect(() => {
     async function loadFirstLayer() {
@@ -105,6 +106,9 @@ function DigPage() {
         genre: '',
         image: ''
       })
+
+      // 検索アーティストを履歴の起点にセット
+      setExplorationHistory([artistName])
 
       const artists = await getSimilarArtists(artistName)
 
@@ -143,6 +147,8 @@ function DigPage() {
   async function handleArtistClick(clickedArtist) {
     setSelectedArtist(clickedArtist) // 選択中のアーティストを更新
 
+    setExplorationHistory([...explorationHistory,clickedArtist.name])
+
     const similarArtists = await getSimilarArtists(clickedArtist.name)
     const formattedArtists = similarArtists.map((artist, index) => ({
       id: index,
@@ -171,6 +177,7 @@ function DigPage() {
       onClose={() => setIsFavoritesOpen(false)}
       favorites={favorites}
       removeFavorite={removeFavorite}
+      explorationHistory={explorationHistory}
       />
 
       {/* 左エリア（探索） */}

@@ -6,7 +6,7 @@
  * @param {function} removeFavorite お気に入りから削除する関数
  */
 
-function FavoritesModal({ isOpen, onClose, favorites, removeFavorite}) {
+function FavoritesModal({ isOpen, onClose, favorites, removeFavorite, explorationHistory}) {
     if(!isOpen) return null
 
     return (
@@ -49,6 +49,31 @@ function FavoritesModal({ isOpen, onClose, favorites, removeFavorite}) {
             </div>
 
             {/* お気に入り一覧 */}
+
+<div className="mt-4">
+    <p
+    className="text-xs tracking-widest mb-3"
+    style={{ color: 'rgba(243,232,255,0.4)' }}
+    >
+        探索の足跡
+    </p>
+    {explorationHistory.map((historyArtistName, index) => (
+        <div key={index} className="flex item-center gap-2 mb-2">
+            <span style={{ color: 'rgba(243,232,255,0.3)'}}>
+                {index === 0 ? '🌱' : '└'}
+                </span>
+                <p
+                className="text-sm"
+                style={{
+                    color: '#f3e8ff',
+                    paddingLeft: `${index * 12}px`
+                }}
+                >
+                    {historyArtistName}
+                </p>
+                </div>
+    ))}
+</div>
             {favorites.length === 0? (
                 <p
                 className="text-sm text-center py-8"
