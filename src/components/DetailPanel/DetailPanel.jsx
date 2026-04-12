@@ -1,12 +1,15 @@
 import { useState, useEffect } from 'react'
 import { getTopTracks } from '../../services/lastfm'
 import { getPreviewUrl } from '../../services/itunes'
+import ArtistInfo from './ArtistInfo'
+import TrackList from './TrackList'
 
 /**
  * 選択中のアーティストの詳細を表示するコンポーネント
  * @param {object} artist 選択中のアーティストオブジェクト
  * @param {function} onAddFavoriteArtist お気に入りに追加する関数
  * @param {function} isFavorite お気に入りかどうか確認する関数
+ * @param {function} onTrackSelect 曲選択時の処理
  */
 
 function DetailPanel({ artist, onAddFavoriteArtist, isFavorite ,onTrackSelect }) {
@@ -16,9 +19,6 @@ function DetailPanel({ artist, onAddFavoriteArtist, isFavorite ,onTrackSelect })
     async function loadTopTracks() {
       if (!artist) return
       const tracks = await getTopTracks(artist.name)
-//for debug
-console.log('tracks:',tracks)
-//end
       setTopTracks(tracks)
     }
     loadTopTracks()
@@ -26,7 +26,7 @@ console.log('tracks:',tracks)
 
   if (!artist) return null
 
-  async function  handleTrackClick(trackName) {
+  async function handleTrackClick(trackName) {
     const previewUrl = await getPreviewUrl(trackName,artist.name)
     onTrackSelect({
             name: trackName,
@@ -43,70 +43,16 @@ console.log('tracks:',tracks)
       boxShadow: '4px 4px 10px #1a0f3e, -4px -4px 10px #3d2882'
     }}
     >
-      {/* アーティスト画像（仮） */}
-    <div
-    className="w-full aspect-square rounded-2xl flex items-center justify-center"
-    style={{
-      background: '#2d1b69',
-      color: '#f9a8d4',
-      boxShadow: 'inset 3px 3px 8px #1a0f3e, inset -3px -3px 8px #3d2882'
-    }}
-    >
-      {artist.name.slice(0,2).toUpperCase()}
-      </div>
+   
+   {/* アーティスト情報 */}
+   <ArtistInfo artist={artist} />
 
-{/* アーティスト名 */}
-      <div>
-        <p
-        className='text-lg font-bold tracking-wide'
-        style={{ color: '#f3e8ff' }}
-        >
-          {artist.name}
-          </p>
-          </div>
+   {/* 人気曲一覧 */}
+   <TrackList
+   topTracks={topTracks}
+   onTrackClick={handleTrackClick}
+   />
 
-          {/* 人気曲一覧 */}
-          <div className="flex flex-col gap-2">
-            <p
-            className="text-xs tracking-widest mb-1"
-            style={{ color: 'rgba(243,232,255,0.4)'}}
-            >
-              人気曲
-            </p>
-            {topTracks.length === 0 ? (
-              <p className="text-xs" style={{ color: 'rgba(243,232,255,0.3)' }}>
-              読み込み中...
-              </p>
-            ) : (
-             topTracks.map((track, index) => (
-              <button
-              key={index}
-              onClick={()=> handleTrackClick(track.name)}
-              className="flex items-center gap-3 px-4 py-3 rounded-xl text-left"
-                style={{
-                  background:'#2d1b69',
-                  boxShadow: '3px 3px 8px #1a0f3e, -3px -3px 8px #3d2882'
-                }}
-                >
-                  <span
-                  className="text-xs"
-                  style={{ color: 'rgba(243,232,255,0.3)'}}
-                  >
-                    {index + 1}
-                  </span>
-                  <span
-                  className="text-sm"
-                  style={{ color: '#f3e8ff'}}
-                  >
-                    {track.name}
-                    </span>
-              <span className="text-xs ml-auto" style={{ color: 'rgba(243,232,255,0.3)' }}>
-                ▶
-              </span>
-            </button>
-              ))
-            )}
-            </div>
 
              {/* お気に入りボタン */}
              <button
