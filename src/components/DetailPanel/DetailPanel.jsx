@@ -6,14 +6,32 @@ import TrackList from './TrackList'
 
 /**
  * 選択中のアーティストの詳細を表示するコンポーネント
+ * useEffectでartistが変化したときにloadTopTracksをLast.fm APIから人気曲を取得してsetTopTracksで画面を更新
+
  * @param {object} artist 選択中のアーティストオブジェクト
  * @param {function} onAddFavoriteArtist お気に入りに追加する関数
  * @param {function} isFavorite お気に入りかどうか確認する関数
  * @param {function} onTrackSelect 曲選択時の処理
  */
 
-function DetailPanel({ artist, onAddFavoriteArtist, isFavorite ,onTrackSelect }) {
+function DetailPanel({ artist, onAddFavoriteArtist, isFavorite, onTrackSelect }) {
   const [topTracks, setTopTracks] = useState([])
+
+/**
+ * 曲がクリックされたときにプレビューURLを取得してAudioPlayerに渡す関数
+ * @param {string} trackName クリックされた曲名
+ * 1. iTunes APIからプレビューURLを取得
+ * 2. 曲名・アーティスト名・プレビューURLをonTrackSelectに渡す
+ * 3. onTrackSelect → DigPage.jsx の setCurrentTrack → AudioPlayer で再生
+ */
+  async function handleTrackClick(trackName) {
+    const previewUrl = await getPreviewUrl(trackName, artist.name)
+    onTrackSelect({
+      name: trackName,
+      artistName: artist.name,
+      previewUrl
+    })
+  }
 
   useEffect(() => {
     async function loadTopTracks() {
@@ -22,51 +40,42 @@ function DetailPanel({ artist, onAddFavoriteArtist, isFavorite ,onTrackSelect })
       setTopTracks(tracks)
     }
     loadTopTracks()
-  },[artist])
+  }, [artist])
 
   if (!artist) return null
 
-  async function handleTrackClick(trackName) {
-    const previewUrl = await getPreviewUrl(trackName,artist.name)
-    onTrackSelect({
-            name: trackName,
-      artistName: artist.name,
-      previewUrl
-    })
-  }
-
   return (
     <div
-    className="flex flex-col gap-4 p-6 rounded-2xl h-full"
-    style={{
-      background: '#2d1b69',
-      boxShadow: '4px 4px 10px #1a0f3e, -4px -4px 10px #3d2882'
-    }}
+      className="flex flex-col gap-4 p-6 rounded-2xl h-full"
+      style={{
+        background: '#2d1b69',
+        boxShadow: '4px 4px 10px #1a0f3e, -4px -4px 10px #3d2882'
+      }}
     >
-   
-   {/* アーティスト情報 */}
-   <ArtistInfo artist={artist} />
 
-   {/* 人気曲一覧 */}
-   <TrackList
-   topTracks={topTracks}
-   onTrackClick={handleTrackClick}
-   />
+      {/* アーティスト情報 */}
+      <ArtistInfo artist={artist} />
+
+      {/* 人気曲一覧 */}
+      <TrackList
+        topTracks={topTracks}
+        onTrackClick={handleTrackClick}
+      />
 
 
-             {/* お気に入りボタン */}
-             <button
-             onClick={() => onAddFavoriteArtist(artist)}
-             className="w-full py-3 rounded-xl text-sm font-bold tracking-widest mt-auto"
-             style={{
-              background: '#2d1b69',
-              color: isFavorite(artist.name)? '#fde68a' : '#bef264',
-              boxShadow: '4px 4px 10px #1a0f3e, -4px -4px 10px #3d2882'
-             }}
-             >
-              {isFavorite(artist.name)?'★ お気に入り済み' : '☆ お気に入りに追加'}
-              </button>
-              </div>
+      {/* お気に入りボタン */}
+      <button
+        onClick={() => onAddFavoriteArtist(artist)}
+        className="w-full py-3 rounded-xl text-sm font-bold tracking-widest mt-auto"
+        style={{
+          background: '#2d1b69',
+          color: isFavorite(artist.name) ? '#fde68a' : '#bef264',
+          boxShadow: '4px 4px 10px #1a0f3e, -4px -4px 10px #3d2882'
+        }}
+      >
+        {isFavorite(artist.name) ? '★ お気に入り済み' : '☆ お気に入りに追加'}
+      </button>
+    </div>
   )
 }
 

@@ -1,10 +1,22 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
+
+/**
+ * 検索フォームを管理するコンポーネント
+ * @param {string} query 検索中のアーティスト名
+ * @param {function} navigate ページ遷移を行うReact Routerのフック
+ */
 function HomePage() {
   const [query, setQuery] = useState('')
   const navigate = useNavigate()
-
+  
+  /**
+   * 検索ボタンまたはEnterキーが押されたときの処理
+   * query.trim()で空白のみの入力を弾く
+   * /dig?artist=検索ワード に遷移してDigPageに検索ワードを渡す
+   * @param {string} query 検索中のアーティスト名
+   */
   function handleSearch() {
     if (query.trim() === '') return
     navigate(`/dig?artist=${query}`)

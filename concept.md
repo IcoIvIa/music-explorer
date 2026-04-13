@@ -152,3 +152,10 @@ VITE_APPLE_MUSIC_TOKEN=your_apple_music_token
 {artist}(検索したアーティスト名)星野源を探索中をクリックしたら、デーティールパネルが検索したアーティスト名に戻る
 
 下に掘り進むクリックは一番深い層しかクリックできないようにする。（９層目にいた場合　８〜1層はクリックしても掘らない。デーティールパネルはどの層でも有効。
+
+HomePage.jsx
+
+# ↓　ボタンDIGをクリック　
+  *（onClick={handleSearch}）で　dig?artist=｛検索したアーティスト名｝のページに遷移。（React Router）
+  
+  

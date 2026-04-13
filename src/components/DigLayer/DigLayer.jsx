@@ -1,17 +1,14 @@
 import ArtistCard from './ArtistCard'
 /**
- *  背景の飾りつけ用関数。svgの波線を生成して層ごと区切ることで地層みたいにする
- * @param {*} param0 
- * function getlayerColorがリターンした値({ bg, shadow1: shadowDark, shadow2: shadowLight, textColor, textColorMuted })をconst layerColorに代入。layerColor.bgで背景色をとりだして、colorTop={layerColor.bg} として渡す。
- * const nextlayerColor = getlayerColor(layer.depth + 1)　で取得した値（次の断層の色）をcolorBottom={nextlayerColor.bg}で代入して引数で渡す
- * 
- 
+ *  背景の飾りつけ用関数。svgの波線を生成して層ごと区切ることで地層のようににする
+ * @param {string}  colorBottom：const nextlayerColor = getlayerColor(layer.depth + 1)　で取得した値（次の断層の色）をcolorBottom={nextlayerColor.bg}で代入して引数で渡す
  * <svg　viewBox***  描画領域等を設定
  * <path d=**** 上部に波線、下部に直線をつくりその間を塗りつぶす。
- * * <path d=*** 波形のベジェ曲線（C240,60　以下続く）で波を描き、
-*    L1440,60 L0,60 Z で下部を直線で閉じて塗りつぶす
+ *  <path d=*** 波形のベジェ曲線（C240,60　以下続く）で波を描き、L1440,60 L0,60 Z で下部を直線で閉じて塗りつぶす
+ *  @param {string} colorTop：（使っていない、削除の際はDigLayer.jsx の呼び出し側も修正）
  * @returns 
  * SVG要素
+ * 
  */
 function WaveDivider({ colorTop, colorBottom }) {
   return (
@@ -30,11 +27,12 @@ function WaveDivider({ colorTop, colorBottom }) {
 }
 
 /**
+ * 
  * 層が深くなるほど背景が濃くなるように色を計算する関数
- * @param {num} depth DigPage から渡される階層番号。1層目、2層目のように扱う。
- * depthはfunction DigPageで分割代入した値、階層のよう扱う
+ * @param {number} depth DigPage から渡される階層番号。1層目、2層目のように扱う。
+ * depthはfunction DigPageでから渡される値、階層のよう扱う
  * maxDepth = は最深部の色。色が変わらないようにする上限値
- * progress = depthをRGB値に変換する。RGBが扱える値にするため0から1以下の数字に変換。
+ * progress = depthをRGB値に変換する。progress = depth を 0〜1 の範囲に正規化した値。この値を使って RGB の補間（色の変化）を計算する。
  * if (progress < 0.5) 前半：浅い紫 → 明るい紫
  * else 後半：明るい紫 → 深い藍紫
  * const bg 以下　影の生成
@@ -73,7 +71,7 @@ function getLayerColor(depth) {
 }
 
 /**
- * 1層分のアーティストカード一覧と波線を表示するコンポーネント
+ * 1層分のアーティストカード一覧と、上記の関数を利用して波線を表示するコンポーネント
  * @param {object} layer 層の情報（depth, artists）
  * @param {function} onArtistClick アーティストカードクリック時の処理
  */

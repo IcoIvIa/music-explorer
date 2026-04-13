@@ -1,6 +1,6 @@
 /**
  * 人気曲一覧を表示するコンポーネント
- * @param {array} topTracks 人気曲の配列
+ * @param {array} topTracks 人気曲の配列（lastfm.jsのgetTopTracksから渡される）
  * @param {function} onTrackClick 曲クリック時の処理
  */
 function TrackList({ topTracks, onTrackClick }) {

@@ -1,9 +1,23 @@
 /**
  * お気に入り一覧を表示するモーダルコンポーネント
+ * ボタンクリック
+    ↓
+setIsFavoritesOpen(true)
+    ↓
+isFavoritesOpen が true になる
+    ↓
+FavoritesModal に isOpen=true が渡る
+    ↓
+if(!isOpen)return null が通らなくなる
+    ↓
+モーダルが表示される
+ * e.stopPropagation() でクリックイベントが親要素に伝わるのを止めている
+ * explorationHistory（）
  * @param {boolean} isOpen モーダルの開閉状態
  * @param {function} onClose モーダルを閉じる関数
  * @param {array} favorites お気に入りアーティストの配列
  * @param {function} removeFavorite お気に入りから削除する関数
+ * @param {array} explorationHistory DigPage.jsxで管理しているクリックしたアーティスト名の履歴クリックしたアーティスト名の履歴配列
  */
 
 function FavoritesModal({ isOpen, onClose, favorites, removeFavorite, explorationHistory}) {
@@ -15,7 +29,7 @@ function FavoritesModal({ isOpen, onClose, favorites, removeFavorite, exploratio
         style={{ background: 'rgba(0,0,0,0.7)'}}
         onClick={onClose}
         >
-            {/* モーダル本体 */}
+            {/* ↑モーダル外側　↓モーダル本体 */}
             <div
             className="w-full max-w-md mx-4 rounded-2xl p-6 flex flex-col gap-4"
             style={{
@@ -101,6 +115,7 @@ function FavoritesModal({ isOpen, onClose, favorites, removeFavorite, exploratio
                             boxShadow: 'inset 2px 2px 5px #1a0f3e, inset -2px -2px 5px #3d2882'
                         }}
                         >
+                            {/*  アーティスト名のイニシャルを表示（時間があれば画像に変える） */}
                             {favoriteArtist.name.slice(0,2).toUpperCase()}
                             </div>
                             <p
