@@ -19,12 +19,24 @@ function useFavorites() {
   /**
    * const newFavorites　今のお気に入り配列（favorites）に新しいアーティスト（artist）を追加した新しい配列を作成する関数
    * newFavorites を JSON 文字列に変換して、localStorage の favorites という名前で保存する
-   * @param {object} artist function DetailPanelの「お気に入りに追加」ボタンを押したとき呼び出したartistを引数とする
+   * if (isFavorite(addArtistName.name) ) returnで多重登録を防止。
+   * @param {object}  
+   * DetailPanel.jsx の「お気に入りに追加」ボタンクリック時に
+ * onAddFavoriteArtist(artist) → DigPage.jsx の addFavorite 
+ * を経由して渡されるアーティストオブジェクト
+ * { id, name, genre, image } の形式
    */
   function addFavorite(addArtistName) {
+
+    if (isFavorite(addArtistName.name) ) return
     const newFavorites = [...favorites, addArtistName]
     setFavorites(newFavorites)
     localStorage.setItem('favorites', JSON.stringify(newFavorites))
+//for debug
+    console.log(`addArtistName`,addArtistName);
+    console.log(`addArtistName.name：${addArtistName.name}`)
+    console.log(`newFavorites:`,newFavorites)
+//end
   }
 
 /**

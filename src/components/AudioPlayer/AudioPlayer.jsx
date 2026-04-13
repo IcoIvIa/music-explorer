@@ -46,7 +46,7 @@ if (!currentTrack) return null
 
 return (
     <div
-    className="fixed bottom-0 left-0 right-0 px-6 py-4 flex items-center gap-4 z-40"
+    className="px-6 py-4 flex items-center gap-4 z-40"
     style={{
                 background: '#2d1b69',
         boxShadow: '0 -4px 20px rgba(0,0,0,0.4)'

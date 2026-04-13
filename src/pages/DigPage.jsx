@@ -23,7 +23,21 @@ function DigPage() {
   const { favorites, addFavorite ,removeFavorite ,isFavorite } = useFavorites()
   
   // 最初の層を読み込む
+
+    /**
+     * function loadFirstLayer()
+ * 検索したアーティストの情報と関連アーティストを取得して初期表示する関数
+ * 1. setSelectedArtist で検索アーティストを詳細パネルの初期表示にセット
+ * 2. setExplorationHistory で検索アーティストを探索履歴の起点にセット
+ * 3. getSimilarArtists で関連アーティストをLast.fm APIから取得
+ * 4. formattedArtists でAPIのデータをDIGGERで使いやすい形に変換
+ * 5. setLayers で1層目として画面に表示
+ * 
+ * 検索欄を実装すれば、useEffectで再検索可能
+     */
+
   useEffect(() => {
+
     async function loadFirstLayer() {
 
       setSelectedArtist({
@@ -100,14 +114,15 @@ function DigPage() {
       />
 
       {/* 左エリア（探索） */}
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1">
 
         <div style={{ background: '#0d0820' }}>
 
           {/* ヘッダー */}
           <div
-            className="px-6 pt-10 pb-6"
+            className="px-6 pt-10 pb-6 sticky top-0 z-30"
             style={{ background: '#5b21b6' }}
+
           >
             <div className="flex items-center justify-between mb-4">
               <h1
@@ -118,6 +133,12 @@ function DigPage() {
               </h1>
               <div
                 className="flex items-center gap-3">
+
+                        {/* AudioPlayer */}
+    <AudioPlayer
+    currentTrack={currentTrack}
+    onClose={() => setCurrentTrack(null)}
+    />
 
                   {/* お気に入りボタン */}
                   <button
@@ -141,6 +162,7 @@ function DigPage() {
                   >
                     {layers.length}層目を掘削中
                 </div>
+                
               </div>
             </div>
             <p className="text-xs tracking-widest"
@@ -149,6 +171,8 @@ function DigPage() {
               {artistName}を探索中
             </p>
           </div>
+
+
 
           {/* 層の一覧 */}
           {layers.map((layer) => (
@@ -184,11 +208,7 @@ function DigPage() {
         />
       </div>
 
-      {/* AudioPlayer */}
-    <AudioPlayer
-    currentTrack={currentTrack}
-    onClose={() => setCurrentTrack(null)}
-    />
+
     </div>
 
 

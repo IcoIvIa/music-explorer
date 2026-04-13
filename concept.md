@@ -145,17 +145,81 @@ VITE_APPLE_MUSIC_TOKEN=your_apple_music_token
 
 - GitHub: [@IcoIvIa](https://github.com/IcoIvIa)
 
-検索候補を出して誤検出を防ぐ。存在しないアーティストやは検索できないようにする。同一名（藤井　と検索して　藤井フミヤ　と藤井風を選べるようにする）
+1 検索周り。
+存在しないアーティストは検索できないようにする。また、エンターでページ遷移は誤作動を起こしやすいので、DIGボタンに重なっているときのみエンターを有効にする。また、検索候補を出して誤検出を防ぐ。同一名を一覧で表示させる（藤井　と検索して　藤井フミヤ　と藤井風を選べるようにする）
 
-アーティスト画像を表示する。
+2 エラーハンドリング　特にAPI周り
 
-{artist}(検索したアーティスト名)星野源を探索中をクリックしたら、デーティールパネルが検索したアーティスト名に戻る
+３ DigPageのUI改善
+*お気に入りに追加をクリックすると、同じお気に入りを無限に追加してしまうのでこれを止める。
+*アーティスト画像を表示する。アーティスト情報テキストも追加したい
+*下に掘り進むクリックは一番深い層しかクリックできないようにする。（９層目にいた場合　８〜1層はクリックしても掘らない。デーティールパネルの表示はどの層でも有効。それに伴い現在いる層を認識しやすいデザインにする。
+*初期検索文字列のDetailPanelに表示を戻せるようにする。（例、星野源を探索中をクリックしたら、デーティールパネルが検索したアーティスト名に戻る）
+*ヘッダー要素をスティッキーにして上に戻らなくてもいいようにする。
+*AudioPlayerを上部ヘッダーの下もしくは、ヘッダー内に変更する。（簡単に実装できるほうを採用）
+*お気に入りモーダルでお気に入りをクリックしても曲を再生できるようにする。（したがってDetailPanelは表示させたままでよい。なおこの際のAudioPlayerの表示は最も実装が簡単な方法を採用する。）
 
-下に掘り進むクリックは一番深い層しかクリックできないようにする。（９層目にいた場合　８〜1層はクリックしても掘らない。デーティールパネルはどの層でも有効。
+4 ロジックのUIの分離　を進めていく。　冗長なコードを整理。
+
+
+# 全体の流れ。
+HomePage.jsx(初期画面)
+↓
+検索
+↓
+DigPage.jsx（検索結果）
+↓
+検索したアーティストは｛artist}という変数に入る。検索結果にはアーティストに関連しているアーティストが５組表示されたアーティストカードが追加されていく。これを１層とする。アーティストカードのアーティスト名をクリックすると｛artist}にはクリックされたアーティスト名が入り、そのクリックされたアーティストと関連するアーティストが５組下の層に表示する。（第２層目）これを繰り返す。第２０層までは色が変化する。
+
+またクリックされたアーティストの人気曲が右のDetailPanelに表示されて、クリックすると曲を流せる。DetailPanelにはお気に入りに登録ボタンがあり、それをクリックするとその曲にたどり着いた履歴を表示することができる。
+
+
 
 HomePage.jsx
+│
+│ 検索ワード入力
+│ DIGボタンクリック
+│ handleSearch()
+│   └ navigate(`/dig?artist=${query}`)
+│
+▼
+DigPage.jsx
+│
+│ URLからartistNameを取得
+│ useEffect([artistName])
+│   └ loadFirstLayer()
+│       ├ setSelectedArtist()    → DetailPanel に初期表示
+│       ├ setExplorationHistory() → 履歴の起点をセット
+│       ├ getSimilarArtists()    → Last.fm API
+│       └ setLayers()            → 1層目を表示
+│
+│ アーティストカードをクリック
+│ handleArtistClick(clickedArtist)
+│   ├ setSelectedArtist()        → DetailPanel を更新
+│   ├ setExplorationHistory()    → 履歴に追加
+│   ├ getSimilarArtists()        → Last.fm API
+│   └ setLayers()                → 次の層を追加（最大20層・色変化）
+│
+├─────────────────────────────────────┐
+▼                                     ▼
+DigLayer.jsx                    DetailPanel.jsx
+│                                     │
+│ getLayerColor()                     │ getTopTracks() → Last.fm API
+│ WaveDivider()                       │ ArtistInfo.jsx
+│ ArtistCard.jsx                      │ TrackList.jsx
+│                                     │   └ handleTrackClick()
+│                                     │       ├ getPreviewUrl() → iTunes API
+│                                     │       └ onTrackSelect()
+│                                     │           └ AudioPlayer.jsx
+│                                     │
+│                                     │ お気に入りボタン
+│                                     │   └ onAddFavoriteArtist()
+│                                     │       └ useFavorites.js
+│                                     │           └ localStorage
+▼                                     ▼
+FavoritesModal.jsx
+│
+├ お気に入り一覧
+├ 探索履歴（explorationHistory）
+└ 削除ボタン → removeFavorite()
 
-# ↓　ボタンDIGをクリック　
-  *（onClick={handleSearch}）で　dig?artist=｛検索したアーティスト名｝のページに遷移。（React Router）
-  
-  
