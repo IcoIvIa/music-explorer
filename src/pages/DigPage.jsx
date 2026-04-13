@@ -15,26 +15,26 @@ import AudioPlayer from '../components/AudioPlayer/AudioPlayer'
 function DigPage() {
   const [searchParams] = useSearchParams()
   const artistName = searchParams.get('artist')
-  const [selectedArtist,setSelectedArtist] = useState(null)
+  const [selectedArtist, setSelectedArtist] = useState(null)
   const [layers, setLayers] = useState([])
   const [isFavoritesOpen, setIsFavoritesOpen] = useState(false)
   const [explorationHistory, setExplorationHistory] = useState([])
   const [currentTrack, setCurrentTrack] = useState(null)
-  const { favorites, addFavorite ,removeFavorite ,isFavorite } = useFavorites()
-  
+  const { favorites, addFavorite, removeFavorite, isFavorite } = useFavorites()
+
   // 最初の層を読み込む
 
-    /**
-     * function loadFirstLayer()
- * 検索したアーティストの情報と関連アーティストを取得して初期表示する関数
- * 1. setSelectedArtist で検索アーティストを詳細パネルの初期表示にセット
- * 2. setExplorationHistory で検索アーティストを探索履歴の起点にセット
- * 3. getSimilarArtists で関連アーティストをLast.fm APIから取得
- * 4. formattedArtists でAPIのデータをDIGGERで使いやすい形に変換
- * 5. setLayers で1層目として画面に表示
- * 
- * 検索欄を実装すれば、useEffectで再検索可能
-     */
+  /**
+   * function loadFirstLayer()
+* 検索したアーティストの情報と関連アーティストを取得して初期表示する関数
+* 1. setSelectedArtist で検索アーティストを詳細パネルの初期表示にセット
+* 2. setExplorationHistory で検索アーティストを探索履歴の起点にセット
+* 3. getSimilarArtists で関連アーティストをLast.fm APIから取得
+* 4. formattedArtists でAPIのデータをDIGGERで使いやすい形に変換
+* 5. setLayers で1層目として画面に表示
+* 
+* 検索欄を実装すれば、useEffectで再検索可能
+   */
 
   useEffect(() => {
 
@@ -80,7 +80,7 @@ function DigPage() {
   async function handleArtistClick(clickedArtist) {
     setSelectedArtist(clickedArtist) // 選択中のアーティストを更新
 
-    setExplorationHistory([...explorationHistory,clickedArtist.name])
+    setExplorationHistory([...explorationHistory, clickedArtist.name])
 
     const similarArtists = await getSimilarArtists(clickedArtist.name)
     const formattedArtists = similarArtists.map((artist, index) => ({
@@ -106,11 +106,11 @@ function DigPage() {
 
       {/* モーダル */}
       <FavoritesModal
-      isOpen={isFavoritesOpen}
-      onClose={() => setIsFavoritesOpen(false)}
-      favorites={favorites}
-      removeFavorite={removeFavorite}
-      explorationHistory={explorationHistory}
+        isOpen={isFavoritesOpen}
+        onClose={() => setIsFavoritesOpen(false)}
+        favorites={favorites}
+        removeFavorite={removeFavorite}
+        explorationHistory={explorationHistory}
       />
 
       {/* 左エリア（探索） */}
@@ -134,42 +134,50 @@ function DigPage() {
               <div
                 className="flex items-center gap-3">
 
-                        {/* AudioPlayer */}
-    <AudioPlayer
-    currentTrack={currentTrack}
-    onClose={() => setCurrentTrack(null)}
-    />
 
-                  {/* お気に入りボタン */}
-                  <button
-                    onClick={() => setIsFavoritesOpen(true)}
-                    className="text-xs tracking-widest px-4 py-2 rounded-full"
-                    style={{
-                      background: '#4c1d95',
-                      color: '#fde68a',
-                      boxShadow: '3px 3px 8px #4c1d95, -3px -3px 8px #6d28d9'
-                    }}
-                  >
-                    ★ お気に入り
-                  </button>
-                  <div
+
+                {/* お気に入りボタン */}
+                <button
+                  onClick={() => setIsFavoritesOpen(true)}
                   className="text-xs tracking-widest px-4 py-2 rounded-full"
-                    style={{
-                  background: '#4c1d95',
+                  style={{
+                    background: '#4c1d95',
+                    color: '#fde68a',
+                    boxShadow: '3px 3px 8px #4c1d95, -3px -3px 8px #6d28d9'
+                  }}
+                >
+                  ★ お気に入り
+                </button>
+                <div
+                  className="text-xs tracking-widest px-4 py-2 rounded-full"
+                  style={{
+                    background: '#4c1d95',
                     color: '#bef264',
                     boxShadow: '3px 3px 8px #4c1d95, -3px -3px 8px #6d28d9'
-                    }}
-                  >
-                    {layers.length}層目を掘削中
+                  }}
+                >
+                  {layers.length}層目を掘削中
                 </div>
-                
+
               </div>
             </div>
-            <p className="text-xs tracking-widest"
-              style={{ color: 'rgba(243,232,255,0.5)' }}
-            >
-              {artistName}を探索中
-            </p>
+
+            <div className="w-full  h-[50px] flex">
+              <p className="text-xs "
+                style={{ color: 'rgba(243,232,255,0.5)' }}
+              >
+                <span className="text-lg font-bold tracking-widest pr-[2px]">{artistName}</span>を探索中
+              </p>
+              {/* AudioPlayer */}
+              <div className='ml-auto'>
+              <AudioPlayer
+                currentTrack={currentTrack}
+                // onClose={() => setCurrentTrack(null)}
+              />
+              </div>
+            </div>
+
+
           </div>
 
 
@@ -200,8 +208,8 @@ function DigPage() {
 
       {/* 右エリア（詳細パネル） */}
       <div className="w-80 p-6 sticky top-0 h-screen">
-        <DetailPanel 
-        artist={selectedArtist}
+        <DetailPanel
+          artist={selectedArtist}
           onAddFavoriteArtist={addFavorite}
           isFavorite={isFavorite}
           onTrackSelect={setCurrentTrack}
