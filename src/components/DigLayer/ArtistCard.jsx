@@ -5,10 +5,10 @@
  * @param {function} onArtistClick カードクリック時の処理
  */
 
-function ArtistCard({ artist, layerColor, onArtistClick}) {
+function ArtistCard({ artist, layerColor, onArtistClick ,isDeepest}) {
     return (
         <button
-        onClick={() => onArtistClick(artist)}
+        onClick={() => onArtistClick(artist, isDeepest)}
         className="flex items-center gap-3 px-4 py-3 rounded-2xl text-left transition-all"
         style={{
             background: layerColor.bg,

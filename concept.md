@@ -223,3 +223,29 @@ FavoritesModal.jsx
 ├ 探索履歴（explorationHistory）
 └ 削除ボタン → removeFavorite()
 
+アーティストカード
+DigPage.jsx
+│
+│ handleArtistClick(clickedArtist, isDeepest)
+│ layers.length → currentDepth として渡す
+│
+▼
+DigLayer.jsx
+│ props: { layer, onArtistClick, currentDepth }
+│
+│ isDeepest = layer.depth === currentDepth を計算
+│
+▼
+ArtistCard.jsx
+│ props: { artist, layerColor, onArtistClick, isDeepest }
+│
+│ onClick={() => onArtistClick(artist, isDeepest)}
+│                ↑
+│          第2引数にisDeepestを渡す
+│
+▼
+DigPage.jsx の handleArtistClick が実行される
+│
+├── isDeepest === true  → 掘り下げる（setLayers）
+└── isDeepest === false → DetailPanelのみ更新（setSelectedArtist）
+

@@ -77,27 +77,30 @@ function DigPage() {
    * @param {object} clickedArtist 
    * 現在のlayersに次の階層（depth: layers.length + 1）のアーティスト情報を追加
    */
-  async function handleArtistClick(clickedArtist) {
+  async function handleArtistClick(clickedArtist, isDeepest) {
+
+    //for debug
+    console.log(isDeepest)
+    //end
+
     setSelectedArtist(clickedArtist) // 選択中のアーティストを更新
 
     setExplorationHistory([...explorationHistory, clickedArtist.name])
 
-    const similarArtists = await getSimilarArtists(clickedArtist.name)
-    const formattedArtists = similarArtists.map((artist, index) => ({
-      id: index,
-      name: artist.name,
-      genre: '',
-      image: artist.image[2]['#text']
-    }))
+    if (isDeepest) {
+      const similarArtists = await getSimilarArtists(clickedArtist.name)
+      const formattedArtists = similarArtists.map((artist, index) => ({
+        id: index,
+        name: artist.name,
+        genre: '',
+        image: artist.image[2]['#text']
+      }))
 
-    //動作確認用
-    // const similarArtists = await getSimilarArtists(clickedArtist.name)
-    // console.log(`関連アーティスト`,similarArtists)
-
-    setLayers([
-      ...layers,
-      { depth: layers.length + 1, artists: formattedArtists }
-    ])
+      setLayers([
+        ...layers,
+        { depth: layers.length + 1, artists: formattedArtists }
+      ])
+    }
   }
 
   return (
@@ -170,10 +173,10 @@ function DigPage() {
               </p>
               {/* AudioPlayer */}
               <div className='ml-auto'>
-              <AudioPlayer
-                currentTrack={currentTrack}
+                <AudioPlayer
+                  currentTrack={currentTrack}
                 // onClose={() => setCurrentTrack(null)}
-              />
+                />
               </div>
             </div>
 
@@ -188,6 +191,7 @@ function DigPage() {
               key={layer.depth}
               layer={layer}
               onArtistClick={handleArtistClick}
+              currentDepth={layers.length}
             />
           ))}
 
