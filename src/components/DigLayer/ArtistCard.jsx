@@ -3,6 +3,7 @@
  * @param {object} artist アーティスト情報
  * @param {object} layerColor 層の色テーマ
  * @param {function} onArtistClick カードクリック時の処理
+ * @param {Boolean}isDeepest　DigLayer.jsxから受け取る値。DigPage.jsxに渡すための中継地点
  */
 
 function ArtistCard({ artist, layerColor, onArtistClick ,isDeepest}) {

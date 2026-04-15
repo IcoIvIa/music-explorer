@@ -13,10 +13,10 @@ async function searchArtist(searchArtistName) {
     `${BASE_URL}?method=artist.search&artist=${searchArtistName}&api_key=${API_KEY}&format=json`
   )
   const data = await response.json()
-  return data.results.artistmatches.artist}
+  return data?.results.artistmatches?.artist || []}
 catch(error){
-  console.error(`searchArtistName エラー：${error}`)
-return null
+  console.error(`searchArtistName エラー：`,error)
+return []
 }}
 
 /**
@@ -30,10 +30,10 @@ async function getSimilarArtists(artistName) {
     `${BASE_URL}?method=artist.getsimilar&artist=${artistName}&api_key=${API_KEY}&format=json&limit=5`
   )
   const data = await response.json()
-  return data.similarartists.artist
+  return data?.similarartists?.artist || []
 }catch(error){
-console.error(`getSimilarArtists エラー：${error}`)
-return null
+console.error(`getSimilarArtists エラー：`,error)
+return []
 }}
 
 
@@ -48,10 +48,10 @@ async function getTopTracks(artistName) {
     `${BASE_URL}?method=artist.gettoptracks&artist=${artistName}&api_key=${API_KEY}&format=json&limit=5`
   )
   const data = await response.json()
-  return data.toptracks.track
+  return data?.toptracks?.track || []
   }catch(error){
-    console.error(`getTopTracks エラー:${error}`)
-    return null
+    console.error(`getTopTracks エラー:`,error)
+    return []
   }
 }
 

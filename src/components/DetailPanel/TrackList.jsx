@@ -4,6 +4,15 @@
  * @param {function} onTrackClick 曲クリック時の処理
  */
 function TrackList({ topTracks, onTrackClick }) {
+  //  まだデータが届いていないときのメッセージ
+  if(topTracks === null) {
+    return <p className="text-xs" style={{ color: 'rgba(243,232,255,0.3)' }}>読み込み中...</p>
+  }
+  // エラーデータが届いた時のメッセージ（空配列[]）
+  if(topTracks.length === 0){
+    return <p className="text-xs" style={{ color: 'rgba(243,232,255,0.3)' }}>データを取得できませんでした</p>
+  }
+  // 正常表示
   return (
     <div className="flex flex-col gap-2">
       <p
@@ -12,12 +21,7 @@ function TrackList({ topTracks, onTrackClick }) {
       >
         人気曲
       </p>
-      {topTracks.length === 0 ? (
-        <p className="text-xs" style={{ color: 'rgba(243,232,255,0.3)' }}>
-          読み込み中...
-        </p>
-      ) : (
-        topTracks.map((track, index) => (
+      {topTracks.map((track, index) => (
           <button
             key={index}
             onClick={() => onTrackClick(track.name)}
@@ -47,7 +51,7 @@ function TrackList({ topTracks, onTrackClick }) {
             </span>
           </button>
         ))
-      )}
+      }
     </div>
   )
 }

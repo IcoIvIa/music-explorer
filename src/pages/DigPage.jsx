@@ -52,12 +52,12 @@ function DigPage() {
       const artists = await getSimilarArtists(artistName)
 
       // 検索アーティストを初期表示にセット
-
-      const formattedArtists = artists.map((artist, index) => ({
+     
+      const formattedArtists =(artists || []).map((artist, index) => ({
         id: index,
         name: artist.name,
         genre: '',
-        image: artist.image[2]['#text']
+        image: artist.image?.[2]?.['#text'] || ''
       }))
       setLayers([{ depth: 1, artists: formattedArtists }])
     }
@@ -70,11 +70,12 @@ function DigPage() {
    * setSelectedArtist(clickedArtist) 選択中のアーティストを更新
    * const similarArtists = await getSimilarArtists(clickedArtist.name)  Last.fm APIから関連アーティストを取得
    * const formattedArtists Last.fmから返ってきたデータを.mapで使いやすい配列に変換
-   * id: index,        // mapのindex番号をIDとして使う。アーティストの読み込み順番を管理する（depthとは別扱い。depthは背景等の描画で使用する）
-   * name: artist.name, // アーティスト名をそのまま使う
-   * genre: '',         // Last.fmはジャンルを返さないので空文字（余裕があれば実装）
+   * id: index,        mapのindex番号をIDとして使う。アーティストの読み込み順番を管理する（depthとは別扱い。depthは背景等の描画で使用する）
+   * name: artist.name, アーティスト名をそのまま使う
+   * genre: '',         Last.fmはジャンルを返さないので空文字（余裕があれば実装）
    * image: artist.image[2]['#text'] // large画像のURLを取り出す
    * @param {object} clickedArtist 
+   * @param {Boolean} isDeepest クリックした層が最深部がどうか判断。tureで層を追加。
    * 現在のlayersに次の階層（depth: layers.length + 1）のアーティスト情報を追加
    */
   async function handleArtistClick(clickedArtist, isDeepest) {
@@ -89,7 +90,7 @@ function DigPage() {
 
     if (isDeepest) {
       const similarArtists = await getSimilarArtists(clickedArtist.name)
-      const formattedArtists = similarArtists.map((artist, index) => ({
+      const formattedArtists = similarArtists || [].map((artist, index) => ({
         id: index,
         name: artist.name,
         genre: '',
@@ -166,8 +167,13 @@ function DigPage() {
             </div>
 
             <div className="w-full  h-[50px] flex">
-              <p className="text-xs "
+              <p className="text-xs cursor-pointer"
                 style={{ color: 'rgba(243,232,255,0.5)' }}
+                onClick={() => setSelectedArtist({
+                  name: artistName,
+                  genre: '',
+                  image: '', // ArtistInfo.jsx の slice エラー対策
+                })}
               >
                 <span className="text-lg font-bold tracking-widest pr-[2px]">{artistName}</span>を探索中
               </p>

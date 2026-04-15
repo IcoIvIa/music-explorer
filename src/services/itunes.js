@@ -16,7 +16,8 @@ async function getPreviewUrl(trackName, artistName) {
     if(data.results.length === 0) return null
     return data.results[0].previewUrl
 }catch(error){
-console.error(`getPreviewUrlエラー：${error}`)
+console.error(`getPreviewUrlエラー:`,error)
+return null
 }}
 
 export { getPreviewUrl }

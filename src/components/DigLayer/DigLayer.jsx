@@ -74,7 +74,7 @@ function getLayerColor(depth) {
  * 1層分のアーティストカード一覧と、上記の関数を利用して波線を表示するコンポーネント
  * @param {object} layer 層の情報（depth, artists）
  * @param {function} onArtistClick アーティストカードクリック時の処理
- * @param {Boolean} currentDepth 最深層がどうかを判断
+ * @param {number} currentDepth 最終的にhandleArtistClickで最深層がどうかを判断するために、ここで、現在の層を取得する。isDeepest={layer.depth === currentDepthでブーリン値に変換してArtistCard.jsxに渡す。
  */
  function DigLayer({ layer, onArtistClick ,currentDepth}) {
     const layerColor = getLayerColor(layer.depth)
