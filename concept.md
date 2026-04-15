@@ -223,6 +223,8 @@ FavoritesModal.jsx
 ├ 探索履歴（explorationHistory）
 └ 削除ボタン → removeFavorite()
 
+
+
 アーティストカード
 DigPage.jsx
 │
