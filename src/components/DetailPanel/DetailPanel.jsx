@@ -65,15 +65,19 @@ function DetailPanel({ artist, onAddFavoriteArtist, isFavorite, onTrackSelect })
 
       {/* お気に入りボタン */}
       <button
-        onClick={() => onAddFavoriteArtist(artist)}
+        onClick={() =>{
+          if (!topTracks || topTracks.length===0)
+            return
+         onAddFavoriteArtist(artist)}}
+        
         className="w-full py-3 rounded-xl text-sm font-bold tracking-widest mt-auto"
         style={{
           background: '#2d1b69',
-          color: isFavorite(artist.name) ? '#fde68a' : '#bef264',
+          color: isFavorite(artist?.name) ? '#fde68a' : '#bef264',
           boxShadow: '4px 4px 10px #1a0f3e, -4px -4px 10px #3d2882'
         }}
       >
-        {isFavorite(artist.name) ? '★ お気に入り済み' : '☆ お気に入りに追加'}
+        {isFavorite(artist?.name) ? '★ お気に入り済み' : '☆ お気に入りに追加'}
       </button>
     </div>
   )
