@@ -21,6 +21,8 @@ function DigPage() {
   const [explorationHistory, setExplorationHistory] = useState([])
   const [currentTrack, setCurrentTrack] = useState(null)
   const { favorites, addFavorite, removeFavorite, isFavorite } = useFavorites()
+  const [isDigging, setIsDigging] = useState(false)
+const [lastDigArtist, setLastDigArtist] = useState(null)
 
   // 最初の層を読み込む
 
@@ -29,9 +31,7 @@ function DigPage() {
 * 検索したアーティストの情報と関連アーティストを取得して初期表示する関数
 * 1. setSelectedArtist で検索アーティストを詳細パネルの初期表示にセット
 * 2. setExplorationHistory で検索アーティストを探索履歴の起点にセット
-* 3. getSimilarArtists で関連アーティストをLast.fm APIから取得
-* 4. formattedArtists でAPIのデータをDIGGERで使いやすい形に変換
-* 5. setLayers で1層目として画面に表示
+
 * 
 * 検索欄を実装すれば、useEffectで再検索可能
    */
@@ -81,28 +81,53 @@ function DigPage() {
   async function handleArtistClick(clickedArtist, isDeepest) {
 
     //for debug
-    console.log(isDeepest)
+    console.log(isDeepest);
     //end
 
     setSelectedArtist(clickedArtist) // 選択中のアーティストを更新
 
     setExplorationHistory([...explorationHistory, clickedArtist.name])
 
-    if (isDeepest) {
-      const similarArtists = await getSimilarArtists(clickedArtist.name)
-      const formattedArtists = similarArtists || [].map((artist, index) => ({
+
+  }
+
+  /**
+   * * 1. getSimilarArtists で関連アーティストをLast.fm APIから取得
+* 2. formattedArtists でAPIのデータをDIGGERで使いやすい形に変換
+* 3. setLayers で1層目として画面に表示
+   * @returns 
+   */
+    async function handleNextLayerDig() {
+//　アーティストが選択されてない場合は処理しない
+    if(!selectedArtist || isDigging) return;
+
+    if(lastDigArtist === selectedArtist.name){
+      return;
+    }
+    setIsDigging(true)
+    try{
+
+      const similarArtists = await getSimilarArtists(selectedArtist.name)
+      const formattedArtists = (similarArtists || []).map((artist, index) => ({
         id: index,
         name: artist.name,
         genre: '',
         image: artist.image[2]['#text']
       }))
 
-      setLayers([
+      setLayers(
+  
+        [
         ...layers,
         { depth: layers.length + 1, artists: formattedArtists }
       ])
+      setLastDigArtist(selectedArtist.name)
+    } catch(error) {
+      console.error(`handleNextLayerDigエラー：`,error)
+    } finally {
+      setIsDigging(false)
     }
-  }
+}
 
   return (
 
@@ -223,6 +248,9 @@ function DigPage() {
           onAddFavoriteArtist={addFavorite}
           isFavorite={isFavorite}
           onTrackSelect={setCurrentTrack}
+          onhandleNextLayerDig={handleNextLayerDig}
+          isDigging={isDigging}
+          lastDigArtist={lastDigArtist}
         />
       </div>
 
@@ -231,7 +259,10 @@ function DigPage() {
 
 
   )
+
+
 }
 {/*function DigPage終わり*/ }
+
 
 export default DigPage

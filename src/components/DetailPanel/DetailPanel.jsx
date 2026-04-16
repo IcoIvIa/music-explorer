@@ -12,9 +12,20 @@ import TrackList from './TrackList'
  * @param {function} onAddFavoriteArtist お気に入りに追加する関数
  * @param {function} isFavorite お気に入りかどうか確認する関数
  * @param {function} onTrackSelect 曲選択時の処理
+ * @param {function} onhandleNextLayerDigt 
+ * @param {function} isCurrentLayer 
  */
 
-function DetailPanel({ artist, onAddFavoriteArtist, isFavorite, onTrackSelect }) {
+function DetailPanel({
+  artist,
+  onAddFavoriteArtist,
+  isFavorite,
+  onTrackSelect,
+  onhandleNextLayerDig,
+  isCurrentLayer,
+  isDigging,
+  lastDigArtist
+}) {
   const [topTracks, setTopTracks] = useState([])
 
 /**
@@ -64,6 +75,7 @@ function DetailPanel({ artist, onAddFavoriteArtist, isFavorite, onTrackSelect })
 
 
       {/* お気に入りボタン */}
+      {/* if(!topTracks || topTracks.length===0) return →topTrackの情報を取得できないとき（つまりアーティスト情報の取得にエラーがあったとき）クリック動作させない */}
       <button
         onClick={() =>{
           if (!topTracks || topTracks.length===0)
@@ -79,6 +91,27 @@ function DetailPanel({ artist, onAddFavoriteArtist, isFavorite, onTrackSelect })
       >
         {isFavorite(artist?.name) ? '★ お気に入り済み' : '☆ お気に入りに追加'}
       </button>
+
+      {/* DIGボタン */}
+      <button
+      onClick={onhandleNextLayerDig}
+      disabled={isDigging || lastDigArtist === artist?.name}
+              className="w-full py-3 rounded-xl text-sm font-bold tracking-widest mt-auto"
+        style={{
+          background: '#2d1b69',
+          color: isCurrentLayer ? '#4b5563' : '#bef264',
+          boxShadow: isCurrentLayer ? 'none' : '4px 4px 10px #1a0f3e, -4px -4px 10px #3d2882',
+          cursor: isCurrentLayer ? 'not-allowed' : 'pointer'
+        }}
+      >
+        {
+  lastDigArtist === artist?.name
+    ? 'already dug'
+    : isDigging
+    ? 'digging...'
+    : 'dig'
+}
+        </button>
     </div>
   )
 }
