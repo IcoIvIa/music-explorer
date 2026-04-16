@@ -1,3 +1,5 @@
+import { use } from "react"
+import { useNavigate } from "react-router-dom"
 /**
  * お気に入り一覧を表示するモーダルコンポーネント
  * ボタンクリック
@@ -20,7 +22,9 @@ if(!isOpen)return null が通らなくなる
  * @param {array} explorationHistory DigPage.jsxで管理しているクリックしたアーティスト名の履歴クリックしたアーティスト名の履歴配列
  */
 
-function FavoritesModal({ isOpen, onClose, favorites, removeFavorite, explorationHistory}) {
+function FavoritesModal({ isOpen, onClose, favorites, removeFavorite, explorationHistory}) 
+{
+    const navigate = useNavigate()
     if(!isOpen) return null
 
     return (
@@ -72,7 +76,8 @@ function FavoritesModal({ isOpen, onClose, favorites, removeFavorite, exploratio
         探索の足跡
     </p>
     {explorationHistory.map((historyArtistName, index) => (
-        <div key={index} className="flex item-center gap-2 mb-2">
+        <div 
+        key={index} className="flex item-center gap-2 mb-2">
             <span style={{ color: 'rgba(243,232,255,0.3)'}}>
                 {index === 0 ? '🌱' : '└'}
                 </span>
@@ -99,6 +104,16 @@ function FavoritesModal({ isOpen, onClose, favorites, removeFavorite, exploratio
                 favorites.map((favoriteArtist, index) =>(
                     <div
                     key={index}
+
+                    onClick={() => {
+      navigate('/history-detail', { 
+        state: { 
+          name: favoriteArtist.name, 
+          frozenHistory: favoriteArtist.frozenHistory 
+        } 
+      })
+      onClose()
+    }}
                     className="flex items-center justify-between px-4 py-3 rounded-xl"
                     style={{
                         background: '#2d1b69',

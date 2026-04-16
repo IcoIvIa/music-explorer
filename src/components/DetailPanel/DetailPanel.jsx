@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { getTopTracks } from '../../services/lastfm'
+import { getTopTracks, getArtistInfo } from '../../services/lastfm'
 import { getPreviewUrl } from '../../services/itunes'
 import ArtistInfo from './ArtistInfo'
 import TrackList from './TrackList'
@@ -27,6 +27,7 @@ function DetailPanel({
   lastDigArtist
 }) {
   const [topTracks, setTopTracks] = useState([])
+  const [fullArtistData, setfullArtistData] = useState(null)
 
 /**
  * 曲がクリックされたときにプレビューURLを取得してAudioPlayerに渡す関数
@@ -47,9 +48,16 @@ function DetailPanel({
   useEffect(() => {
     async function loadTopTracks() {
       if (!artist) return
-      const tracks = await getTopTracks(artist.name)
+
+      const [tracks, info] = await Promise.all([
+        getTopTracks(artist.name),
+        getArtistInfo(artist.name)
+      ]) 
       setTopTracks(tracks)
+      setfullArtistData(info)
     }
+
+    setfullArtistData(null)
     loadTopTracks()
   }, [artist])
 
@@ -65,7 +73,7 @@ function DetailPanel({
     >
 
       {/* アーティスト情報 */}
-      <ArtistInfo artist={artist} />
+      <ArtistInfo artist={fullArtistData || artist} />
 
       {/* 人気曲一覧 */}
       <TrackList

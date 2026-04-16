@@ -55,4 +55,19 @@ async function getTopTracks(artistName) {
   }
 }
 
-export { searchArtist, getSimilarArtists, getTopTracks }
+async function getArtistInfo(artistName) {
+  try{
+const response = await fetch(
+  `${BASE_URL}?method=artist.getinfo&artist=${encodeURIComponent(artistName)}&api_key=${API_KEY}&format=json`
+)
+const data = await response.json()
+return data?.artist || null
+  }
+  catch(error){
+    console.error("getArtistInfo エラー：",error)
+    return null;
+
+  }
+}
+
+export { searchArtist, getSimilarArtists, getTopTracks ,getArtistInfo}

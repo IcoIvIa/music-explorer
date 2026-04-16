@@ -26,16 +26,19 @@ function useFavorites() {
  * を経由して渡されるアーティストオブジェクト
  * { id, name, genre, image } の形式
    */
-  function addFavorite(addArtistName) {
+  function addFavorite(addArtistName, histortAtClickFavorite) {
 
     if (isFavorite(addArtistName.name) ) return
-    const newFavorites = [...favorites, addArtistName]
+    const artistWithHistory ={
+      ...addArtistName,
+      frozenHistory: [...histortAtClickFavorite]
+    }
+    const newFavorites = [...favorites, artistWithHistory]
     setFavorites(newFavorites)
     localStorage.setItem('favorites', JSON.stringify(newFavorites))
+
 //for debug
-    console.log(`addArtistName`,addArtistName);
-    console.log(`addArtistName.name：${addArtistName.name}`)
-    console.log(`newFavorites:`,newFavorites)
+  console.log(`履歴付きでお気に入り登録:`, artistWithHistory)
 //end
   }
 

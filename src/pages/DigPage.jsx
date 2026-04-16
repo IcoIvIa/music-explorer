@@ -245,7 +245,7 @@ const [lastDigArtist, setLastDigArtist] = useState(null)
       <div className="w-80 p-6 sticky top-0 h-screen">
         <DetailPanel
           artist={selectedArtist}
-          onAddFavoriteArtist={addFavorite}
+          onAddFavoriteArtist={artist => addFavorite(artist,explorationHistory)}
           isFavorite={isFavorite}
           onTrackSelect={setCurrentTrack}
           onhandleNextLayerDig={handleNextLayerDig}
