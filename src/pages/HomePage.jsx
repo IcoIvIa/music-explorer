@@ -15,16 +15,23 @@ function HomePage() {
   const navigate = useNavigate()
 
   // 入力時の処理
+  const maxSuggestionNum = 5;
   const handleInputChange = async (e) => {
-    const value = e.target.value
+  const value = e.target.value
     setQuery(value)
 
-    if (value.trim().length > 1) {
-      const results = await searchArtist(value)
-      setSuggestions(results.slice(0, 5))
-    } else {
-      setSuggestions([])
+    if (value.trim().length < 1) {
+     return setSuggestions([]);
     }
+    const results = await searchArtist(value)
+    setSuggestions(results.slice(0, maxSuggestionNum))
+
+    // if (value.trim().length > 1) {
+    //   const results = await searchArtist(value)
+    //   setSuggestions(results.slice(0, maxSuggestionNum))
+    // } else {
+    //   setSuggestions([])
+    // }
   }
 
   // 候補クリック時の処理
