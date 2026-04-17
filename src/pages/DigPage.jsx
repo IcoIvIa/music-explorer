@@ -5,8 +5,8 @@ import useFavorites from '../hooks/useFavorites'
 import DigLayer from '../components/DigLayer/DigLayer'
 import DetailPanel from '../components/DetailPanel/DetailPanel'
 import FavoritesModal from '../components/FavoritesModal/FavoritesModal'
-import AudioPlayer from '../components/AudioPlayer/AudioPlayer'
 import Header from '../components/DigPageOthers/header'
+import { formatArtist } from '../utils/formatArtist'
 
 /**
  * 音楽探索のメインページ
@@ -23,7 +23,7 @@ function DigPage() {
   const [currentTrack, setCurrentTrack] = useState(null)
   const { favorites, addFavorite, removeFavorite, isFavorite } = useFavorites()
   const [isDigging, setIsDigging] = useState(false)
-const [lastDigArtist, setLastDigArtist] = useState(null)
+  const [lastDigArtist, setLastDigArtist] = useState(null)
 
   // 最初の層を読み込む
 
@@ -53,13 +53,10 @@ const [lastDigArtist, setLastDigArtist] = useState(null)
       const artists = await getSimilarArtists(artistName)
 
       // 検索アーティストを初期表示にセット
-     
-      const formattedArtists =(artists || []).map((artist, index) => ({
-        id: index,
-        name: artist.name,
-        genre: '',
-        image: artist.image?.[2]?.['#text'] || ''
-      }))
+
+      const formattedArtists = (artists || []).map((artist, index) => 
+        formatArtist(artist,index)
+      )
       setLayers([{ depth: 1, artists: formattedArtists }])
     }
     loadFirstLayer()
@@ -81,9 +78,6 @@ const [lastDigArtist, setLastDigArtist] = useState(null)
    */
   async function handleArtistClick(clickedArtist, isDeepest) {
 
-    //for debug
-    console.log(isDeepest);
-    //end
 
     setSelectedArtist(clickedArtist) // 選択中のアーティストを更新
 
@@ -93,42 +87,38 @@ const [lastDigArtist, setLastDigArtist] = useState(null)
   }
 
   /**
-   * * 1. getSimilarArtists で関連アーティストをLast.fm APIから取得
+   * 
+   * 1. getSimilarArtists で関連アーティストをLast.fm APIから取得
 * 2. formattedArtists でAPIのデータをDIGGERで使いやすい形に変換
 * 3. setLayers で1層目として画面に表示
    * @returns 
    */
-    async function handleNextLayerDig() {
-//　アーティストが選択されてない場合は処理しない
-    if(!selectedArtist || isDigging) return;
+  async function handleNextLayerDig() {
+    //　アーティストが選択されてない場合は処理しない
+    if (!selectedArtist || isDigging) return;
 
-    if(lastDigArtist === selectedArtist.name){
+    if (lastDigArtist === selectedArtist.name) {
       return;
     }
     setIsDigging(true)
-    try{
+    try {
 
       const similarArtists = await getSimilarArtists(selectedArtist.name)
-      const formattedArtists = (similarArtists || []).map((artist, index) => ({
-        id: index,
-        name: artist.name,
-        genre: '',
-        image: artist.image[2]['#text']
-      }))
-
+      const formattedArtists = (similarArtists || []).map((artist, index) =>
+      formatArtist(artist,index));
       setLayers(
-  
+
         [
-        ...layers,
-        { depth: layers.length + 1, artists: formattedArtists }
-      ])
+          ...layers,
+          { depth: layers.length + 1, artists: formattedArtists }
+        ])
       setLastDigArtist(selectedArtist.name)
-    } catch(error) {
-      console.error(`handleNextLayerDigエラー：`,error)
+    } catch (error) {
+      console.error(`handleNextLayerDigエラー：`, error)
     } finally {
       setIsDigging(false)
     }
-}
+  }
 
   return (
 
@@ -144,18 +134,17 @@ const [lastDigArtist, setLastDigArtist] = useState(null)
       />
 
       {/* 左エリア（探索） */}
-      <div className="flex-1">
-
-        <div style={{ background: '#0d0820' }}>
+      <div className="flex-1 min-w-0 flex flex-col style={{ background: '#0d0820' }}">
 
 
 
-         <Header
-          setIsFavoritesOpen = {setIsFavoritesOpen}
-          layers = {layers}
-          setSelectedArtist = {setSelectedArtist}
-          artistName = {artistName}
-          currentTrack = {currentTrack} 
+          {/*  ヘッダー */}
+          <Header
+            setIsFavoritesOpen={setIsFavoritesOpen}
+            layers={layers}
+            setSelectedArtist={setSelectedArtist}
+            artistName={artistName}
+            currentTrack={currentTrack}
           />
 
 
@@ -181,7 +170,6 @@ const [lastDigArtist, setLastDigArtist] = useState(null)
             </p>
           </div>
 
-        </div>
 
       </div>
 
@@ -189,7 +177,7 @@ const [lastDigArtist, setLastDigArtist] = useState(null)
       <div className="w-80 p-6 sticky top-0 h-screen">
         <DetailPanel
           artist={selectedArtist}
-          onAddFavoriteArtist={artist => addFavorite(artist,explorationHistory)}
+          onAddFavoriteArtist={artist => addFavorite(artist, explorationHistory)}
           isFavorite={isFavorite}
           onTrackSelect={setCurrentTrack}
           onhandleNextLayerDig={handleNextLayerDig}

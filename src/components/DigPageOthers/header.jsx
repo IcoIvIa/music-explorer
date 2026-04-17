@@ -1,3 +1,4 @@
+import { formatArtist } from "../../utils/formatArtist"
 import AudioPlayer from "../AudioPlayer/AudioPlayer"
 
 /**
@@ -11,120 +12,125 @@ import AudioPlayer from "../AudioPlayer/AudioPlayer"
  * @returns アーティスト探索画面のヘッダー
  */
 function Header({
-    setIsFavoritesOpen, 
-    layers, 
-    setSelectedArtist, 
-    artistName, 
-    currentTrack}) 
-    {
+    setIsFavoritesOpen,
+    layers,
+    setSelectedArtist,
+    artistName,
+    currentTrack }) {
 
     return (
-        <div>
 
-            {/* ヘッダー */}
-            <div
-                className="
+
+
+        <div
+            className="
                     px-6 
                     pt-10 
                     pb-6 
                     sticky 
                     top-0 
                     z-30"
-                style={{ background: '#5b21b6' }}>
-
-                <div 
-                    className="
+            style={{ background: '#5b21b6' }}>
+            {/* ヘッダー */}
+            <div
+                className="
                         flex 
                         items-center 
                         justify-between 
                         mb-4">
-                    <h1
-                        className="
+                <h1
+                    className="
                             text-2xl 
                             font-bold 
                             tracking-widest"
-                        style={{
-                            color: '#f3e8ff',
-                            textShadow: '0 0 20px rgba(243,232,255,0.3)' }}>
-                        DIG
-                        <span style={{ color: '#f9a8d4' }}>
+                    style={{
+                        color: '#f3e8ff',
+                        textShadow: '0 0 20px rgba(243,232,255,0.3)'
+                    }}>
+                    DIG
+                    <span style={{ color: '#f9a8d4' }}>
                         GER
-                        </span>
-                    </h1>
+                    </span>
+                </h1>
 
-                    <div
-                        className="
+                <div
+                    className="
                             flex 
                             items-center 
                             gap-3">
 
-                        {/* お気に入りボタン */}
-                        <button
-                            onClick={() => setIsFavoritesOpen(true)}
-                            className="
+                    {/* お気に入りボタン */}
+                    <button
+                        onClick={() => setIsFavoritesOpen(true)}
+                        className="
                                 text-xs 
                                 tracking-widest 
                                 px-4 py-2 
                                 rounded-full"
-                            style={{
-                                background: '#4c1d95',
-                                color: '#fde68a',
-                                boxShadow: '3px 3px 8px #4c1d95, -3px -3px 8px #6d28d9'
-                            }}
-                        >
-                            ★ お気に入り
-                        </button>
-                        <div
-                            className="
+                        style={{
+                            background: '#4c1d95',
+                            color: '#fde68a',
+                            boxShadow: '3px 3px 8px #4c1d95, -3px -3px 8px #6d28d9'
+                        }}
+                    >
+                        ★ お気に入り
+                    </button>
+                    <div
+                        className="
                                 text-xs 
                                 tracking-widest 
                                 px-4 
                                 py-2 
                                 rounded-full"
-                            style={{
-                                background: '#4c1d95',
-                                color: '#bef264',
-                                boxShadow: '3px 3px 8px #4c1d95, -3px -3px 8px #6d28d9'
-                            }}
-                        >
-                            {layers.length}層目を掘削中
-                        </div>
-
+                        style={{
+                            background: '#4c1d95',
+                            color: '#bef264',
+                            boxShadow: '3px 3px 8px #4c1d95, -3px -3px 8px #6d28d9'
+                        }}
+                    >
+                        {layers.length}層目を掘削中
                     </div>
-                </div>
 
-                <div 
-                    className="
+                </div>
+            </div>
+
+            <div
+                className="
                         w-full  
                         h-[50px] 
                         flex">
-                    <p 
-                        className="
-                            text-xs 
-                            cursor-pointer"
-                        style={{
-                            color: 'rgba(243,232,255,0.5)' }}
-                        onClick={() => setSelectedArtist({
-                            name: artistName,
-                            genre: '',
-                            image: '', // ArtistInfo.jsx の slice エラー対策
-                        })}
+                <p
+                    className="
+                        text-xs 
+                        cursor-pointer 
+                        flex 
+                        items-center 
+                        min-w-0 
+                        flex-1"
+                    style={{ color: 'rgba(243,232,255,0.5)' }}
+                    onClick={() => {
+                        // ユーティリティ関数を使ってアーティスト情報を整形
+                        const formatted = formatArtist({ name: artistName }, 0);
+                        setSelectedArtist(formatted);
+                    }}
+                >
+                    {/* アーティスト名：長すぎたら ... にする */}
+                    <span
+                        className="text-lg font-bold tracking-widest pr-[2px] truncate"
+                        title={artistName}                    
                     >
-                    <span 
-                        className="
-                            text-lg 
-                            font-bold 
-                            tracking-widest 
-                            pr-[2px]">
-                            {artistName}</span>を探索中
-                    </p>
+                        {artistName}
+                    </span>
+                    <span className="shrink-0 ml-1">
+                        を探索中
+                        </span>
+                </p>
 
-                    {/* AudioPlayer */}
-                    <div className='ml-auto'>
-                        <AudioPlayer
-                            currentTrack={currentTrack}
-                        />
-                    </div>
+                {/* AudioPlayer */}
+                <div className='ml-auto'>
+                    <AudioPlayer
+                        currentTrack={currentTrack}
+                    />
                 </div>
             </div>
         </div>
