@@ -26,12 +26,6 @@ function HomePage() {
     const results = await searchArtist(value)
     setSuggestions(results.slice(0, maxSuggestionNum))
 
-    // if (value.trim().length > 1) {
-    //   const results = await searchArtist(value)
-    //   setSuggestions(results.slice(0, maxSuggestionNum))
-    // } else {
-    //   setSuggestions([])
-    // }
   }
 
   // 候補クリック時の処理
@@ -77,7 +71,7 @@ function HomePage() {
             {suggestions.map((artist, index) => (
               <li
                 key={index}
-                onClick={() => handleSuggestionClick(artist.name)} // ← これを適用
+                onClick={() => handleSuggestionClick(artist.name)}
                 className="px-4 py-3 text-sm text-[#f3e8ff] hover:bg-[#4c1d95] cursor-pointer transition-colors border-b border-[#1a0f3e] last:border-none"
               >
                 <div className="font-bold">{artist.name}</div>
@@ -85,7 +79,7 @@ function HomePage() {
             ))}
           </ul>
         )}
-
+{/* DIG(検索)ボタン */}
         <button onClick={handleSearch} className="text-xs font-bold tracking-widest px-5 py-2 rounded-xl" style={{ background: '#2d1b69', color: '#f9a8d4', boxShadow: '4px 4px 10px #1a0f3e, -4px -4px 10px #3d2882' }}>
           DIG
         </button>
