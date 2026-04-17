@@ -1,3 +1,12 @@
+/**
+ * 検索バーコンポーネント
+ * * @param {Object} props
+ * @param {string} props.query - 現在の入力文字列
+ * @param {function} props.handleInputChange - 入力値が変更された時のイベントハンドラ
+ * @param {function} props.handleSearch - 検索実行（フォーム送信）時の関数
+ * @param {Array} props.suggestions - 表示する検索候補の配列
+ * @param {function} props.handleSuggestionClick - 候補をクリックした時の関数
+ */
 function SearchBar({
     query,
     handleInputChange,
@@ -8,6 +17,10 @@ function SearchBar({
     return (
 
         <form
+        /**
+       * フォーム送信時の処理
+       * Enterキー押下時やDIGボタンクリック時に実行される
+       */
         onSubmit={(e) => {
             e.preventDefault();
             handleSearch();
@@ -41,7 +54,7 @@ function SearchBar({
                 style={{ color: '#f3e8ff' }}
             />
 
-            {/* サジェストリスト */}
+           {/* サジェストリストの表示条件。候補が存在する場合のみ、絶対配置(absolute)でリストを表示する*/}
             {suggestions.length > 0 && (
                 <ul className='
                     absolute
