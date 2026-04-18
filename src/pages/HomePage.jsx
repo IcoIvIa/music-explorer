@@ -66,12 +66,7 @@ function HomePage() {
 
   return (
     <div
-      className='
-        min-h-screen
-        flex flex-col
-        items-center
-        justify-center
-        px-6'
+      className='min-h-screen flex flex-col items-center justify-center px-6'
       style={{
         background:
           'linear-gradient(180deg, #a78bfa 0%, #7c3aed 25%, #4c1d95 50%, #2d1b69 70%, #0d0820 100%)'
@@ -80,11 +75,7 @@ function HomePage() {
 
       {/* ロゴ・タグライン*/}
       <h1
-        className="
-        text-5xl 
-        font-bold 
-        tracking-widest 
-        mb-2"
+        className="text-5xl font-bold tracking-widest mb-2"
         style={{
           color: '#f3e8ff',
           textShadow: '0 0 30px rgba(243,232,255,0.4)'
@@ -97,10 +88,7 @@ function HomePage() {
       </h1>
 
       <p
-        className="
-        text-xs 
-        tracking-widest 
-        mb-12"
+        className="text-xs tracking-widest mb-12"
         style={{ color: 'rgba(243,232,255,0.5)' }}>
 
         MUSIC EXPLORATION

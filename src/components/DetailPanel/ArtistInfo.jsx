@@ -18,7 +18,7 @@ function ArtistInfo({ artist }) {
           }}
         />
       ) : (  )}*/}
-        //画像がない場合のイニシャル表示
+        {/* 画像がない場合のイニシャル表示 */}
         <div
           className="w-full aspect-square rounded-2xl flex items-center justify-center text-4xl font-bold"
           style={{
