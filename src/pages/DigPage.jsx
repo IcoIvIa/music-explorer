@@ -188,7 +188,8 @@ function DigPage() {
       </div>
 
       {/* 右エリア（詳細パネル） */}
-      <div className="w-80 p-6 sticky top-0 h-screen">
+      <div className="w-80 p-6 sticky top-0 h-screen"
+      >
         <DetailPanel
           artist={selectedArtist}
           onAddFavoriteArtist={artist => {

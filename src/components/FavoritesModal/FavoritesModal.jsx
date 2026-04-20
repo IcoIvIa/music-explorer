@@ -83,12 +83,8 @@ function FavoritesModal({ isOpen, onClose, favorites, removeFavorite, exploratio
      * @param {object} artist クリックされたアーティスト（name, frozenHistory）
      */
     const handleArtistClick = (artist) => {
-        navigate('/history-detail', {
-            state: {
-                name: artist.name,
-                frozenHistory: artist.frozenHistory
-            }
-        })
+        localStorage.setItem('frozenHistory',JSON.stringify(artist.frozenHistory))
+        window.open(`/history-detail?name=${encodeURIComponent(artist.name)}`, '_blank')
         onClose()
     }
 

@@ -1,21 +1,15 @@
-import { useLocation, useNavigate } from 'react-router-dom'
-
 /**
  * お気に入りアーティストの探索履歴を詳細表示するページ
  */
 function HistoryPage() {
-  const location = useLocation()
-  const navigate = useNavigate()
-
-  // location.state から送られてきたデータ（アーティスト名と履歴）を取り出す
-  // データがない場合のガードとして、空の配列などをデフォルト値に設定
-  const { name, frozenHistory } = location.state || { name: '不明', frozenHistory: [] }
+const name = new URLSearchParams(window.location.search).get('name') || '不明'
+const frozenHistory = JSON.parse(localStorage.getItem('frozenHistory') || '[]')
 
   return (
     <div className="min-h-screen p-8" style={{ background: '#0d0820', color: '#f3e8ff' }}>
       {/* 戻るボタン */}
       <button
-        onClick={() => navigate(-1)} // 一つ前のページ（DigPage）に戻る
+        onClick={() => window.close()} // 一つ前のページ（DigPage）に戻る
         className="mb-8 text-xs tracking-widest px-4 py-2 rounded-full"
         style={{
           background: '#2d1b69',

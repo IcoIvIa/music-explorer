@@ -19,7 +19,10 @@ function Header({ setIsFavoritesOpen, layers, setSelectedArtist, artistName, cur
 
 
 
-        <div className="px-6 pt-10 pb-6 sticky top-0 z-30 bg-[#5b21b6]">
+        <div 
+            className="px-6 pt-10 pb-6 sticky top-0 z-30 bg-[#5b21b6]"
+            
+            >
       {/* 2カラムグリッド：左＝ロゴ/アーティスト名、右＝バッジ群/AudioPlayer */}
       <div className="grid grid-cols-[1fr_auto] gap-y-4 items-center">
                 {/* 上段左：ロゴ */}
@@ -34,7 +37,7 @@ function Header({ setIsFavoritesOpen, layers, setSelectedArtist, artistName, cur
                     {/* お気に入りボタン */}
                     <button
                         onClick={() => setIsFavoritesOpen(true)}
-                        className="text-xs tracking-widest px-4 py-2 rounded-full bg-[#4c1d95] text-[#fde68a] shadow-neu-header"
+                        className="text-xs tracking-widest px-4 py-2 rounded-full bg-[#4c1d95] text-[#fde68a] shadow-neu-header cursor-pointer"
                     >
                         ★ お気に入り
                     </button>

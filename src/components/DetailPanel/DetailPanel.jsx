@@ -101,7 +101,9 @@ function DetailPanel({
   // JSX
 
   return (
-    <div className="flex flex-col gap-4 p-6 rounded-2xl h-full bg-surface shadow-neu">
+    <div className="flex flex-col gap-4 p-6 rounded-2xl h-full bg-surface shadow-neu"
+    
+    >
 
       {/* アーティスト情報 */}
       <ArtistInfo artist={fullArtistData || artist} />
