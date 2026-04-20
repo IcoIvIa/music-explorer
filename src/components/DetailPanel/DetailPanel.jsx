@@ -27,16 +27,17 @@ function DetailPanel({
 }) {
   const [topTracks, setTopTracks] = useState([])
   const [fullArtistData, setFullArtistData] = useState(null)
+  const [isLoading, setIsLoading] = useState(false)
 
-/**
- * 曲がクリックされたときにプレビューURLを取得して親へ渡す関数
- *
- * @param {string} trackName クリックされた曲名
- * 
- * 1. iTunes API からプレビューURLを取得
- * 2. 曲名・アーティスト名・プレビューURLを onTrackSelect に渡す
- * 3. 親コンポーネント（DigPage）で AudioPlayer に反映される
- */
+  /**
+   * 曲がクリックされたときにプレビューURLを取得して親へ渡す関数
+   *
+   * @param {string} trackName クリックされた曲名
+   * 
+   * 1. iTunes API からプレビューURLを取得
+   * 2. 曲名・アーティスト名・プレビューURLを onTrackSelect に渡す
+   * 3. 親コンポーネント（DigPage）で AudioPlayer に反映される
+   */
   async function handleTrackClick(trackName) {
     const previewUrl = await getPreviewUrl(trackName, artist.name)
     onTrackSelect({
@@ -46,21 +47,22 @@ function DetailPanel({
     })
   }
 
-/**
- * 選択中のアーティストが変わったときに
- * Last.fm API から人気曲とアーティスト情報を取得する処理
- *
- * @effect
- * @param {object} artist 選択中のアーティストオブジェクト
- * 
- * 1. fullArtistData を一旦 null にして「読み込み中」状態にする
- * 2. getTopTracks と getArtistInfo を並列で取得
- * 3. 結果を state に保存して画面を更新
- */
+  /**
+   * 選択中のアーティストが変わったときに
+   * Last.fm API から人気曲とアーティスト情報を取得する処理
+   *
+   * @effect
+   * @param {object} artist 選択中のアーティストオブジェクト
+   * 
+   * 1. fullArtistData を一旦 null にして「読み込み中」状態にする
+   * 2. getTopTracks と getArtistInfo を並列で取得
+   * 3. 結果を state に保存して画面を更新
+   */
   useEffect(() => {
     if (!artist) return
 
     async function loadArtistData() {
+      setIsLoading(true)
       setFullArtistData(null) // 読み込み中の状態にする
 
       const [tracks, info] = await Promise.all([
@@ -70,6 +72,7 @@ function DetailPanel({
 
       setTopTracks(tracks)
       setFullArtistData(info)
+      setIsLoading(false)
     }
 
     loadArtistData()
@@ -86,8 +89,8 @@ function DetailPanel({
   const digLabel = alreadyDug
     ? 'already dug'
     : isDigging
-    ? 'digging...'
-    : 'dig'
+      ? 'digging...'
+      : 'dig'
 
   const favVariant = isFavorite(artist.name) ? 'yellow' : 'primary'
   const favLabel = isFavorite(artist.name)
@@ -104,10 +107,10 @@ function DetailPanel({
       <ArtistInfo artist={fullArtistData || artist} />
 
       {/* 人気曲一覧 */}
-      <TrackList
-        topTracks={topTracks}
-        onTrackClick={handleTrackClick}
-      />
+      {isLoading
+        ? <p className="text-xs text-[rgba(243,232,255,0.3)]">読み込み中...</p>
+        : <TrackList topTracks={topTracks} onTrackClick={handleTrackClick} />
+      }
 
       {/* お気に入りボタン */}
       <NeuButton

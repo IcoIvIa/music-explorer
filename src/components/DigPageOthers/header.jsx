@@ -1,5 +1,6 @@
 import { formatArtist } from "../../utils/formatArtist"
 import AudioPlayer from "../AudioPlayer/AudioPlayer"
+import { useNavigate } from "react-router-dom"
 
 /**
  * Headerコンポーネント
@@ -12,6 +13,7 @@ import AudioPlayer from "../AudioPlayer/AudioPlayer"
  * @returns アーティスト探索画面のヘッダー
  */
 function Header({ setIsFavoritesOpen, layers, setSelectedArtist, artistName, currentTrack }) {
+    const navigate = useNavigate()
 
     return (
 
@@ -21,7 +23,9 @@ function Header({ setIsFavoritesOpen, layers, setSelectedArtist, artistName, cur
       {/* 2カラムグリッド：左＝ロゴ/アーティスト名、右＝バッジ群/AudioPlayer */}
       <div className="grid grid-cols-[1fr_auto] gap-y-4 items-center">
                 {/* 上段左：ロゴ */}
-                <h1 className="text-2xl font-bold tracking-widest text-[#f3e8ff]" style={{ textShadow: '0 0 20px rgba(243,232,255,0.3)' }}>
+                <h1 onClick={() => navigate('/')}
+                    className="text-2xl font-bold tracking-widest text-[#f3e8ff] cursor-pointer" 
+                    style={{ textShadow: '0 0 20px rgba(243,232,255,0.3)' }}>
                     DIG<span className="text-[#f9a8d4]">GER</span>
                 </h1>
 {/* 上段右：バッジ群 */}

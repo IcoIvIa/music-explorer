@@ -76,7 +76,7 @@ function getLayerColor(depth) {
  * @param {function} onArtistClick アーティストカードクリック時の処理
  * @param {number} currentDepth 最終的にhandleArtistClickで最深層がどうかを判断するために、ここで、現在の層を取得する。isDeepest={layer.depth === currentDepthでブーリン値に変換してArtistCard.jsxに渡す。
  */
- function DigLayer({ layer, onArtistClick ,currentDepth}) {
+ function DigLayer({ layer, onArtistClick ,currentDepth ,selectedArtist}) {
     const layerColor = getLayerColor(layer.depth)
     const nextLayerColor =getLayerColor(layer.depth + 1)
     
@@ -104,6 +104,7 @@ function getLayerColor(depth) {
               layerColor={layerColor}
               onArtistClick={onArtistClick}
               isDeepest={layer.depth === currentDepth}
+              isSelected={artist.name === selectedArtist?.name}
             />
           ))}
         </div>
