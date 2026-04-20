@@ -1,25 +1,24 @@
 import { useState, useRef, useEffect } from 'react'
-
-/**
- * 曲のプレビューを再生するコンポーネント
- * @param {object} currentTrack 再生中の曲情報（name, artistName, previewUrl）
- */
-
-function AudioPlayer({ currentTrack,}) {
+ 
+function AudioPlayer({ currentTrack }) {
   const [isPlaying, setIsPlaying] = useState(false)
   const [currentTime, setCurrentTime] = useState(0)
   const [duration, setDuration] = useState(0)
   const audioRef = useRef(null)
-
-
+ 
   useEffect(() => {
+    const audio = audioRef.current
     if (currentTrack?.previewUrl) {
-      audioRef.current.src = currentTrack.previewUrl
-      audioRef.current.play()
+      audio.src = currentTrack.previewUrl
+      audio.play().catch((e) => console.log("再生ブロック:", e))
       setIsPlaying(true)
     }
+    return () => {
+      audio.pause()
+      setIsPlaying(false)
+    }
   }, [currentTrack])
-
+ 
   function handlePlayPause() {
     if (isPlaying) {
       audioRef.current.pause()
@@ -28,119 +27,94 @@ function AudioPlayer({ currentTrack,}) {
     }
     setIsPlaying(!isPlaying)
   }
-
+ 
   function handleTimeUpdate() {
     setCurrentTime(audioRef.current.currentTime)
-    setDuration(audioRef.current.duration)
+    if (!duration || duration === Infinity) {
+      setDuration(audioRef.current.duration)
+    }
   }
-
+ 
+  function handleSeek(e) {
+    const time = Number(e.target.value)
+    audioRef.current.currentTime = time
+    setCurrentTime(time)
+  }
+ 
   function formatTime(seconds) {
-    if (!seconds) return '0:00'
-    const minutes = Math.floor(seconds / 60)
-    const remainingSeconds = Math.floor(seconds % 60)
-    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`
+    if (!seconds || isNaN(seconds)) return '0:00'
+    const m = Math.floor(seconds / 60)
+    const s = Math.floor(seconds % 60)
+    return `${m}:${s.toString().padStart(2, '0')}`
   }
-
+ 
+  const progress = duration ? (currentTime / duration) * 100 : 0
+ 
   return (
-    <div
-      className="px-6 py-3 flex items-center gap-4 z-40"
-      style={{
-        background: '#2d1b69',
-        boxShadow: '0 -4px 20px rgba(0,0,0,0.4)'
-      }}
-    >
+    <div className="flex items-center gap-3">
       <audio
         ref={audioRef}
         onTimeUpdate={handleTimeUpdate}
         onEnded={() => setIsPlaying(false)}
       />
-
-      {/* 再生・停止ボタン */}
+ 
+      {/* 再生ボタン */}
       <button
         onClick={handlePlayPause}
         disabled={!currentTrack}
-        className="w-10 h-10 rounded-full flex items-center justify-center flex-shrink-0"
-        style={{
-          background: '#2d1b69',
-          boxShadow: '4px 4px 10px #1a0f3e, -4px -4px 10px #3d2882'
-        }}
+        className="w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 transition-transform active:scale-90 bg-[#4c1d95] text-[#f9a8d4] shadow-neu-header disabled:opacity-30"
       >
-        <span
-          style={{ color: '#f9a8d4', fontSize: '16px' }}>
+        {/* <span className="text-[#f9a8d4] text-sm"> */}
           {isPlaying ? '\u23F8\uFE0E' : '\u25B6\uFE0E'}
-        </span>
+        {/* </span> */}
       </button>
-
-      {/* 曲情報 */}
-      <div className="min-w-[200px] max-w-[200px]">
-        {currentTrack ? (
-          <>
-            <p className="text-sm font-medium truncate " style={{ color: '#f3e8ff' }}>
-              {currentTrack?.name}
-            </p>
-
-            <p className="text-xs truncate" style={{ color: 'rgba(243,232,255,0.4)' }}>
-              {currentTrack?.artistName}
-            </p>
-          </>
-        ) : (
-          <p className='text-xs'
-          style={{ color: 'rgba(243,232,255,0.3)' }}>
-            曲を選んでください
+ 
+      {/* 曲名 + プログレスバー */}
+      <div className="flex flex-col gap-1 w-[160px] min-w-0 h-[52px] justify-center">
+        {/* 曲名 */}
+        <p className="text-xs truncate text-[rgba(243,232,255,0.6)]">
+          {currentTrack ? currentTrack.name : '曲を選んでください'}
+        </p>
+        {/* アーティスト名 */}
+        {currentTrack && (
+          <p className="text-[10px] truncate text-[rgba(243,232,255,0.4)]">
+            {currentTrack.artistName}
           </p>
-
         )}
-      </div>
-
-
-      {/* プログレスバー */}
-      <div className="flex items-center gap-2 flex-shrink-0">
-        <span className="text-xs"
-          style={{
-            color: 'rgba(243,232,255,0.4)',
-            width: '35px',
-            fontFamily: 'monospace',
-            fontVariantNumeric: 'tabular-nums'
-          }}>
-          {formatTime(currentTime)}
-        </span>
-        <div
-          className="w-24 h-1 rounded-full overflow-hidden"
-          style={{ background: 'rgba(243,232,255,0.1)' }}
-        >
-          <div
-            className="h-full rounded-full"
-            style={{
-              width: `${duration ? (currentTime / duration) * 100 : 0}%`,
-              background: '#a78bfa'
-            }}
-          />
+ 
+        {/* プログレスバー＋時間 */}
+        <div className="flex items-center gap-1.5">
+          <span className="text-[10px] text-[rgba(243,232,255,0.4)] tabular-nums w-6 shrink-0">
+            {formatTime(currentTime)}
+          </span>
+ 
+          <div className="relative flex-1 h-0.5 flex items-center">
+            <input
+              type="range"
+              min="0"
+              max={duration || 0}
+              step="0.1"
+              value={currentTime}
+              onChange={handleSeek}
+              className="absolute w-full h-3 opacity-0 cursor-pointer z-10"
+            />
+            {/* トラック背景 */}
+            <div className="absolute w-full h-full rounded-full bg-[rgba(243,232,255,0.15)]">
+              {/* 進捗 */}
+              <div
+                className="h-full rounded-full bg-[#c4b5fd] transition-all"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+          </div>
+ 
+          <span className="text-[10px] text-[rgba(243,232,255,0.4)] tabular-nums w-6 shrink-0 text-right">
+            {formatTime(duration)}
+          </span>
         </div>
-        <span className="text-xs"
-          style={{
-            color: 'rgba(243,232,255,0.4)',
-            width: '35px',
-            fontFamily: 'monospace',
-            fontVariantNumeric: 'tabular-nums'
-          }}>
-          {formatTime(duration)}
-        </span>
       </div>
-
-      {/* 閉じるボタン 最終的に不要なら削除*/}
-      {/* <button
-        onClick={onClose}
-        className="text-xs px-3 py-1 rounded-full flex-shrink-0"
-        style={{
-          background: '#2d1b69',
-          color: 'rgba(243,232,255,0.4)',
-          boxShadow: '3px 3px 8px #1a0f3e, -3px -3px 8px #3d2882'
-        }}
-      >
-        ✕
-      </button> */}
     </div>
   )
 }
-
+ 
 export default AudioPlayer

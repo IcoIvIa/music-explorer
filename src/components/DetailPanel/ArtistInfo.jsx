@@ -18,28 +18,18 @@ function ArtistInfo({ artist }) {
           }}
         />
       ) : (  )}*/}
-        {/* 画像がない場合のイニシャル表示 */}
         <div
-          className="w-full aspect-square rounded-2xl flex items-center justify-center text-4xl font-bold"
-          style={{
-            background: '#2d1b69',
-            color: '#f9a8d4',
-            boxShadow: 'inset 3px 3px 8px #1a0f3e, inset -3px -3px 8px #3d2882'
-          }}
-        >
-          {artist.name.slice(0, 2).toUpperCase()}
+          className="w-full aspect-square rounded-2xl flex items-center justify-center text-4xl font-bold bg-surface shadow-neu-inset text-[#f9a8d4]">
+        {artist.name.slice(0, 2).toUpperCase()}
+
         </div>
      
 
       {/* アーティスト名 */}
-      <div>
-        <p
-          className="text-lg font-bold tracking-wide"
-          style={{ color: '#f3e8ff' }}
-        >
-          {artist.name}
-        </p>
-      </div>
+      <p className="text-lg font-bold tracking-wide text-[#f3e8ff] truncate"
+      title={artist.name}>
+        {artist.name}
+      </p>
     </div>
   )
 }

@@ -1,32 +1,23 @@
 import { useNavigate } from "react-router-dom"
 
 /**
- * モーダル内に探索履歴をツリー形式で表示するコンポーネント
+ * モーダル内に探索履歴をツリー形式で表示するサブコンポーネント
  * @param {array} explorationHistory クリックしたアーティスト名の履歴配列
  */
 function ExplorationHistory({ explorationHistory }) {
     return (
         <div className="mt-4">
-            <p
-                className="text-xs tracking-widest mb-3"
-                style={{ color: 'rgba(243,232,255,0.4)' }}
-            >
-                探索の足跡
-            </p>
+            <p className="text-xs tracking-widest mb-3 text-[rgba(243,232,255,0.4)]">探索の足跡</p>
+
             {explorationHistory.map((historyArtistName, index) => (
                 <div
                     key={index}
                     className="flex items-center gap-2 mb-2"
                 >
-                    <span style={{ color: 'rgba(243,232,255,0.3)' }}>
-                        {index === 0 ? '🌱' : '└'}
-                    </span>
+                    <span className="text-[rgba(243,232,255,0.3)]">{index === 0 ? '🌱' : '└'}</span>
                     <p
-                        className="text-sm"
-                        style={{
-                            color: '#f3e8ff',
-                            paddingLeft: `${index * 12}px`
-                        }}
+                        className="text-sm text-[#f3e8ff]"
+                        style={{ paddingLeft: `${index * 12}px` }}
                     >
                         {historyArtistName}
                     </p>
@@ -37,7 +28,7 @@ function ExplorationHistory({ explorationHistory }) {
 }
 
 /**
- * お気に入りアーティスト1件を表示するコンポーネント
+ * お気に入りアーティスト1件を表示するサブコンポーネント
  * @param {object} artist お気に入りアーティストのオブジェクト（name, frozenHistory）
  * @param {function} onArtistClick アーティストをクリックしたときの処理
  * @param {function} onRemove お気に入りから削除する関数
@@ -46,31 +37,16 @@ function FavoriteItem({ artist, onArtistClick, onRemove }) {
     return (
         <div
             onClick={() => onArtistClick(artist)}
-            className="flex items-center justify-between px-4 py-3 rounded-xl"
-            style={{
-                background: '#2d1b69',
-                boxShadow: '3px 3px 8px #1a0f3e, -3px -3px 8px #3d2882'
-            }}
+            className="flex items-center justify-between px-4 py-3 rounded-xl bg-surface shadow-neu-sm cursor-pointer"
         >
             {/* アバター */}
             <div className="flex items-center gap-3">
-                <div
-                    className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0"
-                    style={{
-                        background: '#2d1b69',
-                        color: '#f9a8d4',
-                        boxShadow: 'inset 2px 2px 5px #1a0f3e, inset -2px -2px 5px #3d2882'
-                    }}
-                >
+                <div className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 bg-surface shadow-neu-inset-sm text-[#f9a8d4]">
+
                     {/*  アーティスト名のイニシャルを表示（時間があれば画像に変える） */}
                     {artist.name.slice(0, 2).toUpperCase()}
                 </div>
-                <p
-                    className="text-sm font-medium"
-                    style={{ color: '#f3e8ff' }}
-                >
-                    {artist.name}
-                </p>
+                <p className="text-sm font-medium text-[#f3e8ff]">{artist.name}</p>
             </div>
 
             {/* 削除ボタン */}
@@ -79,12 +55,7 @@ function FavoriteItem({ artist, onArtistClick, onRemove }) {
                     e.stopPropagation()
                     onRemove(artist.name)
                 }}
-                className="text-xs px-3 py-1 rounded-full"
-                style={{
-                    background: '#2d1b69',
-                    color: 'rgba(243,232,255,0.4)',
-                    boxShadow: '3px 3px 8px #1a0f3e, -3px -3px 8px #3d2882'
-                }}
+                className="text-xs px-3 py-1 rounded-full bg-surface shadow-neu-sm text-[rgba(243,232,255,0.4)]"
             >
                 削除
             </button>
@@ -94,7 +65,7 @@ function FavoriteItem({ artist, onArtistClick, onRemove }) {
 
 
 /**
- * DigPage.jsxヘッダーお気に入りをクリックすると、お気に入り一覧を表示するモーダルコンポーネント
+ * DigPage.jsxヘッダーお気に入りをクリックすると、お気に入り一覧を表示するメインモーダルコンポーネント
  * @param {boolean} isOpen モーダルの開閉状態
  * @param {function} onClose モーダルを閉じる関数
  * @param {array} favorites お気に入りアーティストの配列
@@ -106,11 +77,11 @@ function FavoritesModal({ isOpen, onClose, favorites, removeFavorite, exploratio
     // モーダルが閉じている場合は何もレンダリングしない
     if (!isOpen) return null
 
-/**
- * お気に入りアーティストをクリックしたときの処理
- * 詳細ページに遷移してモーダルを閉じる
- * @param {object} artist クリックされたアーティスト（name, frozenHistory）
- */
+    /**
+     * お気に入りアーティストをクリックしたときの処理
+     * 詳細ページに遷移してモーダルを閉じる
+     * @param {object} artist クリックされたアーティスト（name, frozenHistory）
+     */
     const handleArtistClick = (artist) => {
         navigate('/history-detail', {
             state: {
@@ -129,31 +100,16 @@ function FavoritesModal({ isOpen, onClose, favorites, removeFavorite, exploratio
         >
             {/* ↑モーダル外側　↓モーダル本体 */}
             <div
-                className="w-full max-w-md mx-4 rounded-2xl p-6 flex flex-col gap-4"
-                style={{
-                    background: '#2d1b69',
-                    boxShadow: '8px 8px 20px #1a0f3e, -8px -8px 20px #3d2882',
-                    maxHeight: '80vh',
-                    overflowY: 'auto'
-                }}
+                className="w-full max-w-md mx-4 rounded-2xl p-6 flex flex-col gap-4 bg-surface shadow-neu-lg overflow-y-auto"
+                style={{ maxHeight: '80vh' }}
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* ヘッダー */}
                 <div className="flex items-center justify-between">
-                    <p
-                        className="text-lg font-bold tracking-widest"
-                        style={{ color: '#f3e8ff' }}
-                    >
-                        ★ お気に入り
-                    </p>
+                    <p className="text-lg font-bold tracking-widest text-[#f3e8ff]">★ お気に入り</p>
                     <button
                         onClick={onClose}
-                        className="text-xs px-3 py-1 rounded-full"
-                        style={{
-                            background: '#2d1b69',
-                            color: 'rgba(243,232,255,0.5)',
-                            boxShadow: '3px 3px 8px #1a0f3e, -3px -3px 8px #3d2882'
-                        }}
+                        className="text-xs px-3 py-1 rounded-full bg-surface shadow-neu-sm text-[rgba(243,232,255,0.5)]"
                     >
                         閉じる
                     </button>
@@ -164,10 +120,7 @@ function FavoritesModal({ isOpen, onClose, favorites, removeFavorite, exploratio
 
                 {/* お気に入り一覧 */}
                 {favorites.length === 0 ? (
-                    <p
-                        className="text-sm text-center py-8"
-                        style={{ color: 'rgba(243,232,255,0.3)' }}
-                    >
+                    <p className="text-sm text-center py-8 text-[rgba(243,232,255,0.3)]">
                         まだお気に入りがありません
                     </p>
                 ) : (

@@ -1,1 +1,31 @@
 @import "tailwindcss";
+
+@theme {
+  /* ベースカラー */
+  --color-surface: #2d1b69;
+  --color-deeper: #1a0f3e;
+  --color-lighter: #3d2882;
+  --color-base: #0d0820;
+
+  /* テキストカラー */
+  --color-text-primary: #f3e8ff;
+  --color-text-accent: #f9a8d4;
+  --color-text-green: #bef264;
+  --color-text-yellow: #fde68a;
+  --color-text-muted: rgba(243, 232, 255, 0.5);
+  --color-text-faint: rgba(243, 232, 255, 0.4);
+  --color-text-ghost: rgba(243, 232, 255, 0.3);
+  --color-text-disabled: rgba(243, 232, 255, 0.2);
+
+  /* ニューモーフィズム（浮き出し） */
+  --shadow-neu: 4px 4px 10px #1a0f3e, -4px -4px 10px #3d2882;
+  --shadow-neu-sm: 3px 3px 8px #1a0f3e, -3px -3px 8px #3d2882;
+  --shadow-neu-lg: 8px 8px 20px #1a0f3e, -8px -8px 20px #3d2882;
+
+  /* ニューモーフィズム（凹み） */
+  --shadow-neu-inset: inset 3px 3px 8px #1a0f3e, inset -3px -3px 8px #3d2882;
+  --shadow-neu-inset-sm: inset 2px 2px 5px #1a0f3e, inset -2px -2px 5px #3d2882;
+
+  /* ヘッダーボタン用（明るめ） */
+  --shadow-neu-header: 3px 3px 8px #4c1d95, -3px -3px 8px #6d28d9;
+}
