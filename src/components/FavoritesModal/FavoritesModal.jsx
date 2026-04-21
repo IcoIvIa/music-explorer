@@ -88,6 +88,7 @@ function FavoritesModal({ isOpen, onClose, favorites, removeFavorite, exploratio
         onClose()
     }
 
+
     return (
         <div
             className="fixed inset-0 z-50 flex items-center justify-center"
@@ -129,6 +130,10 @@ function FavoritesModal({ isOpen, onClose, favorites, removeFavorite, exploratio
                         />
                     ))
                 )}
+
+                <p className="text-xs tracking-widest text-[#f3e8ff]">
+                    アーティスト名をクリックすると,そのアーティストにたどり着いた足跡を確認することができます。
+                </p>
             </div>
         </div>
     )

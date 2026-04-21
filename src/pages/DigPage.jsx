@@ -7,6 +7,9 @@ import DetailPanel from '../components/DetailPanel/DetailPanel'
 import FavoritesModal from '../components/FavoritesModal/FavoritesModal'
 import Header from '../components/DigPageOthers/header'
 import { formatArtist } from '../utils/formatArtist'
+import TutorialModal from '../components/DigPageOthers/TutorialModal'
+
+// --------------------------------------------------
 
 /**
  * 音楽探索のメインページ
@@ -27,6 +30,7 @@ function DigPage() {
   const isFirstRender = useRef(true)
   const bottomRef = useRef(null)
   const [toast, setToast] = useState('')
+  const [tutorialStep, setTutorialStep] = useState(1)
 
 
   // 最初の層を読み込む
@@ -131,6 +135,17 @@ function DigPage() {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [layers])
 
+  // ------------------------------
+
+  const [isTutorialOpen, setIsTutorialOpen] = useState(() => {
+
+    return localStorage.getItem('hasSeenTutorial') === null
+  });
+
+
+
+  // ----------------------------------- 
+
   return (
 
     <div className="flex min-h-screen" style={{ background: '#0d0820' }}>
@@ -182,6 +197,13 @@ function DigPage() {
           >
             さらに深く掘り下げよう
           </p>
+          <TutorialModal
+            isOpen={isTutorialOpen}
+            onClose={() => setIsTutorialOpen(false)}
+            tutorialStep={tutorialStep}
+            setTutorialStep={setTutorialStep}
+          />
+
         </div>
 
 

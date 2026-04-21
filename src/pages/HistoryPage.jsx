@@ -53,7 +53,7 @@ function HistoryPage() {
             {name}
           </h1>
           <p className="text-xs tracking-[0.2em]" style={{ color: base.textColorMuted }}>
-            EXPLORATION LOG
+            探索の記録
           </p>
         </header>
 
