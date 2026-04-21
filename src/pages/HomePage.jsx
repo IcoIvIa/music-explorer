@@ -91,7 +91,7 @@ function HomePage() {
         className="text-xs tracking-widest mb-12"
         style={{ color: 'rgba(243,232,255,0.5)' }}>
 
-        MUSIC EXPLORATION
+        新たなアーティストを掘り当てよう
       </p>
 
       <SearchBar

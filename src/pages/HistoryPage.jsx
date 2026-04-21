@@ -61,6 +61,7 @@ function HistoryPage() {
         <div className="flex flex-col gap-3">
           {(frozenHistory || []).map((artistName, index) => {
             const color = getLayerColor(index + 1)
+            const isLast = index === frozenHistory.length - 1
 
             return (
               <div
@@ -71,7 +72,8 @@ function HistoryPage() {
                   marginRight: `-${index * 16}px`
                 }}
               >
-                {/* インデックス番号：凹み */}
+
+                {/* インデックス番号 */}
                 <div
                   className="w-12 flex items-center justify-center text-xs font-mono"
                   style={{
@@ -81,6 +83,7 @@ function HistoryPage() {
                   }}
                 >
                   {String(index + 1).padStart(2, '0')}
+
                 </div>
 
                 {/* アーティスト名：浮き上がり */}
@@ -94,8 +97,14 @@ function HistoryPage() {
                     borderRadius: '2px'
                   }}
                 >
-                  <p className="text-lg font-bold tracking-tight">{artistName}</p>
+                  <div className="flex items-center text-4xl pr-4">
+                    {isLast ? '💎' : ''}
+                  </div>
+                  <p className="text-lg font-bold tracking-tight">{artistName}
+                  </p>
+
                 </div>
+
               </div>
             )
           })}

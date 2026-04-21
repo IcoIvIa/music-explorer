@@ -14,7 +14,7 @@ function ExplorationHistory({ explorationHistory }) {
                     key={index}
                     className="flex items-center gap-2 mb-2"
                 >
-                    <span className="text-[rgba(243,232,255,0.3)]">{index === 0 ? '🌱' : '└'}</span>
+                    <span className="text-[rgba(243,232,255,0.3)]">{index === 0 ? '⛏️' : '└'}</span>
                     <p
                         className="text-sm text-[#f3e8ff]"
                         style={{ paddingLeft: `${index * 12}px` }}
