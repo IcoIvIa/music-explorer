@@ -1,5 +1,5 @@
 /**
- * 共通ニューモーフィズムボタン
+ * 共通ニューモーフィズムボタンをまとめたコンポーネント
  *
  * @param {'primary'|'yellow'|'disabled'} variant
  *   primary  - lime green テキスト（デフォルト）

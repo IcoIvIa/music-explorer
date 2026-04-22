@@ -37,9 +37,6 @@ function useFavorites() {
     setFavorites(newFavorites)
     localStorage.setItem('favorites', JSON.stringify(newFavorites))
 
-//for debug
-  console.log(`履歴付きでお気に入り登録:`, artistWithHistory)
-//end
   }
 
 /**

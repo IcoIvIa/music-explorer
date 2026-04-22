@@ -9,8 +9,6 @@ import Header from '../components/DigPageOthers/header'
 import { formatArtist } from '../utils/formatArtist'
 import TutorialModal from '../components/DigPageOthers/TutorialModal'
 
-// --------------------------------------------------
-
 /**
  * 音楽探索のメインページ
  * 状態管理とAPI通信を担当する
