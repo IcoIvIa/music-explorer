@@ -5,7 +5,7 @@ import { useNavigate } from "react-router-dom"
 /**
  * Headerコンポーネント
  * 掘削中の層数表示、お気に入りモーダルの開閉、AudioPlayerの表示を管理
- * * @param {Function} setIsFavoritesOpen - お気に入りモーダルの開閉
+ * @param {Function} setIsFavoritesOpen - お気に入りモーダルの開閉
  * @param {Array} layers - 現在の掘削層の配列
  * @param {Function} setSelectedArtist - 選択中のアーティストを更新
  * @param {string} artistName - 検索中のアーティスト名
@@ -20,7 +20,7 @@ function Header({ setIsFavoritesOpen, layers, setSelectedArtist, artistName, cur
             className="px-6 pt-10 pb-6 sticky top-0 z-30"
             style={{ 
                 background: 'linear-gradient(180deg, #5b21b6 0%, #4c1d95 100%)',
-                boxShadow: '0 4px 20px rgba(13, 8, 32, 0.3)' // 下への影で奥行きを強調
+                boxShadow: '0 4px 20px rgba(13, 8, 32, 0.3)' 
             }}
         >
             {/* 2カラムグリッド：左＝ロゴ/アーティスト名、右＝バッジ群/AudioPlayer */}
@@ -37,14 +37,14 @@ function Header({ setIsFavoritesOpen, layers, setSelectedArtist, artistName, cur
 
                 {/* 上段右：バッジ群 */}
                 <div className="flex items-center gap-3">
-                    {/* お気に入りボタン（既存のニューモーフィズムデザインを維持） */}
+                    {/* お気に入りボタン */}
                     <button
                         onClick={() => setIsFavoritesOpen(true)}
                         className="text-xs tracking-widest px-4 py-2 rounded-full bg-[#4c1d95] text-[#fde68a] shadow-neu-header cursor-pointer"
                     >
                         ★ お気に入り
                     </button>
-                    {/* 層数表示バッジ（既存デザインを維持） */}
+                    {/* 層数表示バッジ */}
                     <div className="text-xs tracking-widest px-4 py-2 rounded-full bg-[#4c1d95] text-[#bef264] shadow-neu-header">
                         {layers.length}層目を掘削中
                     </div>
@@ -63,9 +63,7 @@ function Header({ setIsFavoritesOpen, layers, setSelectedArtist, artistName, cur
                 </p>
 
                 {/* 下段右：AudioPlayer */}
-                <div className="flex items-center justify-end">
-                    <AudioPlayer currentTrack={currentTrack} />
-                </div>
+                <AudioPlayer currentTrack={currentTrack} />
             </div>
         </div>
     )
