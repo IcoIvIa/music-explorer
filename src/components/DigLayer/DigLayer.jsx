@@ -32,10 +32,11 @@ function WaveDivider({colorBottom }) {
  * @param {object} layer 層の情報（depth, artists）
  * @param {function} onArtistClick アーティストカードクリック時の処理
  * @param {number} currentDepth 最終的にhandleArtistClickで最深層がどうかを判断するために、ここで、現在の層を取得する。
+ * @param {object}   selectedArtist 選択中のアーティスト
  */
- function DigLayer({ layer, onArtistClick ,currentDepth ,selectedArtist}) {
+ function DigLayer({ layer, onArtistClick, currentDepth, selectedArtist,}) {
     const layerColor = getLayerColor(layer.depth)
-    const nextLayerColor =getLayerColor(layer.depth + 1)
+    const nextLayerColor = getLayerColor(layer.depth + 1)
     
     return (
     <div>
@@ -54,13 +55,12 @@ function WaveDivider({colorBottom }) {
 
         {/* アーティストカード一覧 */}
         <div className="flex gap-3 flex-wrap">
-          {layer.artists.map((artist) => (
+          {layer.artists.map((artist, cardIndex) => (
             <ArtistCard
               key={artist.id}
               artist={artist}
               layerColor={layerColor}
               onArtistClick={onArtistClick}
-              isSelected={artist.name === selectedArtist?.name}
             />
           ))}
         </div>

@@ -22,44 +22,62 @@ function DigPage() {
   const [isFavoritesOpen, setIsFavoritesOpen] = useState(false)
   const [explorationHistory, setExplorationHistory] = useState([])
   const [currentTrack, setCurrentTrack] = useState(null)
-  const { favorites, addFavorite, removeFavorite, isFavorite } = useFavorites()
   const [isDigging, setIsDigging] = useState(false)
   const [lastDigArtist, setLastDigArtist] = useState(null)
-  const isFirstRender = useRef(true)
-  const bottomRef = useRef(null)
   const [toast, setToast] = useState('')
   const [tutorialStep, setTutorialStep] = useState(1)
+  const [isTutorialOpen, setIsTutorialOpen] = useState(
+    () => localStorage.getItem('hasSeenTutorial') === null
+  )
 
+  const isFirstRender = useRef(true)
+  const bottomRef = useRef(null)
 
-  // 最初の層を読み込む
+  const { favorites, addFavorite, removeFavorite, isFavorite } = useFavorites()
 
-  /**
-   * function loadFirstLayer()
-* 検索したアーティストの情報と関連アーティストを取得して初期表示する関数
-* 1. setSelectedArtist で検索アーティストを詳細パネルの初期表示にセット
-* 2. setExplorationHistory で検索アーティストを探索履歴の起点にセット
+  // アーティスト選択
+  function handleArtistClick(clickedArtist) {
+    setSelectedArtist(clickedArtist)
+    setExplorationHistory(prev => [...prev, clickedArtist.name])
+  }
 
-* 
-* 検索欄を実装すれば、useEffectで再検索可能
-   */
+  // DIG（次の層を掘る）
+  async function handleNextLayerDig() {
+    if (!selectedArtist || isDigging) return
+    if (lastDigArtist === selectedArtist.name) return
 
+    setIsDigging(true)
+    try {
+      const similarArtists = await getSimilarArtists(selectedArtist.name)
+      const formattedArtists = (similarArtists || []).map((artist, index) =>
+        formatArtist(artist, index)
+      )
+      setLayers(prev => [
+        ...prev,
+        { depth: prev.length + 1, artists: formattedArtists },
+      ])
+      setLastDigArtist(selectedArtist.name)
+    } catch (error) {
+      console.error('handleNextLayerDigエラー：', error)
+    } finally {
+      setIsDigging(false)
+    }
+  }
+
+  // お気に入り追加
+  function handleAddFavorite(artist) {
+    addFavorite(artist, explorationHistory)
+    setToast(`★ ${artist.name} をお気に入りに追加しました`)
+    setTimeout(() => setToast(''), 1000)
+  }
+
+  // 初回ロード：1層目を取得
   useEffect(() => {
-
     async function loadFirstLayer() {
-
-      setSelectedArtist({
-        name: artistName,
-        genre: '',
-        image: ''
-      })
-
-      // 検索アーティストを履歴の起点にセット
+      setSelectedArtist({ name: artistName, genre: '', image: '' })
       setExplorationHistory([artistName])
 
       const artists = await getSimilarArtists(artistName)
-
-      // 検索アーティストを初期表示にセット
-
       const formattedArtists = (artists || []).map((artist, index) =>
         formatArtist(artist, index)
       )
@@ -68,62 +86,7 @@ function DigPage() {
     loadFirstLayer()
   }, [artistName])
 
-
-  /**
-   * アーティストカードがクリックされたときの処理をする関数
-   * setSelectedArtist(clickedArtist) 選択中のアーティストを更新
-   * const similarArtists = await getSimilarArtists(clickedArtist.name)  Last.fm APIから関連アーティストを取得
-   * const formattedArtists Last.fmから返ってきたデータを.mapで使いやすい配列に変換
-   * id: index,        mapのindex番号をIDとして使う。アーティストの読み込み順番を管理する（depthとは別扱い。depthは背景等の描画で使用する）
-   * name: artist.name, アーティスト名をそのまま使う
-   * genre: '',         Last.fmはジャンルを返さないので空文字（余裕があれば実装）
-   * image: artist.image[2]['#text'] // large画像のURLを取り出す
-   * @param {object} clickedArtist 
-   * 現在のlayersに次の階層（depth: layers.length + 1）のアーティスト情報を追加
-   */
-  async function handleArtistClick(clickedArtist) {
-
-
-    setSelectedArtist(clickedArtist) // 選択中のアーティストを更新
-
-    setExplorationHistory(prev => [...prev, clickedArtist.name])
-
-
-  }
-
-  /**
-   * 1. getSimilarArtists で関連アーティストをLast.fm APIから取得
-  * 2. formattedArtists でAPIのデータをDIGGERで使いやすい形に変換
-  * 3. setLayers で1層目として画面に表示
-   * @returns 
-   */
-  async function handleNextLayerDig() {
-    //　アーティストが選択されてない場合は処理しない
-    if (!selectedArtist || isDigging) return;
-
-    if (lastDigArtist === selectedArtist.name) {
-      return;
-    }
-    setIsDigging(true)
-    try {
-
-      const similarArtists = await getSimilarArtists(selectedArtist.name)
-      const formattedArtists = (similarArtists || []).map((artist, index) =>
-        formatArtist(artist, index));
-      setLayers(
-
-        [
-          ...layers,
-          { depth: layers.length + 1, artists: formattedArtists }
-        ])
-      setLastDigArtist(selectedArtist.name)
-    } catch (error) {
-      console.error(`handleNextLayerDigエラー：`, error)
-    } finally {
-      setIsDigging(false)
-    }
-  }
-
+  // 層が追加されたら最下部へスクロール
   useEffect(() => {
     if (isFirstRender.current) {
       isFirstRender.current = false
@@ -132,19 +95,8 @@ function DigPage() {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' })
   }, [layers])
 
-  // ------------------------------
-
-  const [isTutorialOpen, setIsTutorialOpen] = useState(() => {
-
-    return localStorage.getItem('hasSeenTutorial') === null
-  });
-
-
-
-  // ----------------------------------- 
-
+  // JSX 
   return (
-
     <div className="flex min-h-screen" style={{ background: '#0d0820' }}>
 
       {/* モーダル */}
@@ -157,23 +109,21 @@ function DigPage() {
       />
 
       {/* 左エリア（探索） */}
-      <div className="flex-1 min-w-0 flex flex-col "style={{ background: '#0d0820' }}>
+      <div className="flex-1 min-w-0 flex flex-col" style={{ background: '#0d0820' }}>
 
-
-
-        {/*  ヘッダー */}
-        <Header
-          setIsFavoritesOpen={setIsFavoritesOpen}
-          layers={layers}
-          setSelectedArtist={setSelectedArtist}
-          artistName={artistName}
-          currentTrack={currentTrack}
-        />
-
-
+        {/* ヘッダー */}
+        <div style={{ borderRadius: '0 0 4px 4px', }}>
+          <Header
+            setIsFavoritesOpen={setIsFavoritesOpen}
+            layers={layers}
+            setSelectedArtist={setSelectedArtist}
+            artistName={artistName}
+            currentTrack={currentTrack}
+          />
+        </div>
 
         {/* 層の一覧 */}
-        {layers.map((layer) => (
+        {layers.map((layer,) => (
           <DigLayer
             key={layer.depth}
             layer={layer}
@@ -189,7 +139,8 @@ function DigPage() {
           className="px-6 py-12 text-center"
           style={{ background: '#0d0820' }}
         >
-          <p className="text-xs tracking-widest"
+          <p
+            className="text-xs tracking-widest"
             style={{ color: 'rgba(243,232,255,0.2)' }}
           >
             さらに深く掘り下げよう
@@ -200,22 +151,16 @@ function DigPage() {
             tutorialStep={tutorialStep}
             setTutorialStep={setTutorialStep}
           />
-
         </div>
-
-
       </div>
 
       {/* 右エリア（詳細パネル） */}
-      <div className="w-80 p-6 sticky top-0 h-screen"
+      <div
+        className="w-80 p-6 sticky top-0 h-screen rounded-l-xl"
       >
         <DetailPanel
           artist={selectedArtist}
-          onAddFavoriteArtist={artist => {
-            addFavorite(artist, explorationHistory)
-            setToast(`★ ${artist.name} をお気に入りに追加しました`)
-            setTimeout(() => setToast(''), 1000)
-          }}
+          onAddFavoriteArtist={handleAddFavorite}
           isFavorite={isFavorite}
           onTrackSelect={setCurrentTrack}
           onhandleNextLayerDig={handleNextLayerDig}
@@ -223,20 +168,15 @@ function DigPage() {
           lastDigArtist={lastDigArtist}
         />
       </div>
+
+      {/* トースト通知 */}
       {toast && (
-        <div className="fixed bottom-6 left-fixed bottom-6 left-1/2 -translate-x-1/2 px-6 py-3 rounded-full text-xs tracking-widest text-[#f3e8ff] bg-[#4c1d95] z-50">
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 px-6 py-3 rounded-full text-xs tracking-widest text-[#f3e8ff] bg-[#4c1d95] z-50">
           {toast}
         </div>
       )}
-
     </div>
-
-
   )
-
-
 }
-{/*function DigPage終わり*/ }
-
 
 export default DigPage

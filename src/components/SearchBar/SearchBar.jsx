@@ -1,13 +1,22 @@
 /**
  * 検索バーコンポーネント
- * @param {Object} props
- * @param {string} props.query - 現在の入力文字列
- * @param {function} props.handleInputChange - 入力値が変更された時のイベントハンドラ
- * @param {function} props.handleSearch - 検索実行（フォーム送信）時の関数
- * @param {Array} props.suggestions - 表示する検索候補の配列
- * @param {function} props.handleSuggestionClick - 候補をクリックした時の関数
+ * @param {string}   query                  現在の入力文字列
+ * @param {function} handleInputChange      入力値変更時のハンドラ
+ * @param {function} handleSearch           検索実行関数
+ * @param {array}    suggestions            検索候補の配列
+ * @param {function} handleSuggestionClick  候補クリック時の関数
+ * @param {number}   highlightIndex         キーボードでハイライト中のindex（-1=未選択）
+ * @param {function} onKeyDown              キーダウンイベントハンドラ
  */
-function SearchBar({ query, handleInputChange, handleSearch, suggestions, handleSuggestionClick }) {
+function SearchBar({ 
+    query, 
+    handleInputChange, 
+    handleSearch, 
+    suggestions, 
+    handleSuggestionClick,
+    highlightIndex = -1,
+    onKeyDown,
+ }) {
 
     return (
 
@@ -26,7 +35,9 @@ function SearchBar({ query, handleInputChange, handleSearch, suggestions, handle
                 placeholder="アーティスト名を入力..."
                 value={query}
                 onChange={handleInputChange}
+                onKeyDown={onKeyDown}
                 className="flex-1 bg-transparent outline-none text-sm text-[#f3e8ff]"
+                autoComplete="off"
             />
 
             {/* サジェストリストの表示条件。候補が存在する場合のみ、絶対配置でリストを表示する*/}
@@ -37,7 +48,11 @@ function SearchBar({ query, handleInputChange, handleSearch, suggestions, handle
                         <li
                             key={index}
                             onClick={() => handleSuggestionClick(artist.name)}
-                            className="px-4 py-3 text-sm text-[#f3e8ff] hover:bg-[#4c1d95] cursor-pointer transition-colors border-b border-[#1a0f3e] last:border-none"
+                            className="px-4 py-3 text-sm text-[#f3e8ff] cursor-pointer transition-colors border-b border-[#1a0f3e] last:border-none"
+                                          style={{
+                // キーボードでハイライト中の行は背景色を変える
+                background: index === highlightIndex ? '#4c1d95' : 'transparent',
+              }}
                         >
                             <div className="font-bold">
                                 {artist.name}
