@@ -1,4 +1,5 @@
 import { getLayerColor } from '../utils/getLayerColor'
+import '../../ResponsiveCss/HistoryPageResponsive.css'
 
 /**
  * 履歴リストの各行（アーティスト名）を表示するコンポーネント
@@ -11,7 +12,11 @@ function HistoryItem({ artistName, index, totalSteps }) {
   return (
     <div
       className="flex items-stretch"
-      style={{ marginLeft: `${indent}px`, marginRight: `-${indent}px` }}
+      style={{ 
+        marginLeft: `${indent}px`, 
+        marginRight: `-${indent}px`,
+        '--indent-mobile': `${indent / 2}px`
+      }}
     >
       <div
         className="w-12 flex items-center justify-center text-xs font-mono"

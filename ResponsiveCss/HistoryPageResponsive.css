@@ -1,0 +1,50 @@
+/* 1. 横スクロールの防止 */
+body {
+  overflow-x: hidden;
+}
+
+/* 2. インデントの計算 */
+.flex.items-stretch {
+  --soft-indent: calc(var(--indent-mobile) * 0.125); 
+  margin-left: calc(var(--indent-mobile) * 0.1) !important; 
+  margin-right: 0 !important;
+  transition: margin-left 0.3s ease;
+}
+
+/* 3.履歴ページ内のアーティスト名のみを縦に逃がす設定 */
+/* セレクタを限定し、DetailPanel（詳細パネル）など他への干渉を防ぐ */
+.flex.items-stretch .text-lg {
+  white-space: normal !important; 
+  word-break: break-word !important; 
+  display: block !important;
+  line-height: 1.4 !important;
+  overflow: visible !important;
+  text-overflow: clip !important;
+}
+
+/* 4. モバイル（640px以下）向けの微調整 */
+@media (max-width: 640px) {
+  .min-h-screen.p-8 {
+    padding: 16px !important;
+  }
+
+  .flex.items-stretch {
+    margin-left: calc(var(--indent-mobile) * 0.08) !important;
+  }
+
+  header h1.text-4xl {
+    font-size: 1.5rem !important;
+  }
+
+  /* カード内のパディング調整 */
+  .flex-1.p-6 {
+    padding: 12px 16px !important;
+    align-items: flex-start !important; 
+  }
+
+  /* 宝石アイコンの位置調整 */
+  .text-4xl.pr-4 {
+    padding-top: 4px;
+    font-size: 1.2rem !important;
+  }
+}

@@ -96,7 +96,7 @@ function Header({ setIsFavoritesOpen, layers, setSelectedArtist, artistName, cur
                     className="text-xs cursor-pointer flex items-center min-w-0 text-[rgba(243,232,255,0.5)]"
                     onClick={() => setSelectedArtist(formatArtist({ name: artistName }, 0))}
                 >
-                    <span className="text-base font-bold tracking-widest pr-[2px] truncate" title={artistName}>
+                    <span className="text-base font-bold tracking-widest pr-[2px] truncate text-purple-100" title={artistName}>
                         {artistName}
                     </span>
                     <span className="shrink-0 ml-1">を探索中</span>

@@ -8,6 +8,7 @@ import FavoritesModal from '../components/FavoritesModal/FavoritesModal'
 import Header from '../components/DigPageOthers/header'
 import { formatArtist } from '../utils/formatArtist'
 import TutorialModal from '../components/DigPageOthers/TutorialModal'
+import '../../ResponsiveCss/DigPageResponsive.css'
 
 /**
  * 音楽探索のメインページ
@@ -148,7 +149,7 @@ function DigPage() {
           >
             さらに深く掘り下げよう
           </p>
-          
+
           <TutorialModal
             isOpen={isTutorialOpen}
             onClose={() => setIsTutorialOpen(false)}
@@ -160,7 +161,7 @@ function DigPage() {
 
       {/* 右エリア（詳細パネル） */}
       <div
-        className="hidden md:block w-80 p-6 sticky top-0 h-screen rounded-l-xl"
+        className="hidden md:block w-80 flex-shrink-0 p-6 sticky top-0 h-screen rounded-l-xl"
       >
         <DetailPanel
           artist={selectedArtist}
@@ -174,47 +175,48 @@ function DigPage() {
       </div>
 
       {/* ★ モバイル用ボトムシート */}
-{isBottomSheetOpen && (
-  <>
-    <div
-      className="md:hidden fixed inset-0 z-40 bg-black/50"
-      onClick={() => setIsBottomSheetOpen(false)}
-    />
-    <div
-      className="md:hidden fixed bottom-0 inset-x-0 z-50 rounded-t-3xl overflow-y-auto"
-      style={{ height: '75vh', background: '#2d1b69', boxShadow: '0 -8px 30px rgba(0,0,0,0.5)' }}
-    >
-      <div className="flex justify-center pt-3 pb-1">
-        <div className="w-10 h-1 rounded-full bg-[rgba(243,232,255,0.3)]" />
-      </div>
-      <div className="flex justify-end px-4 pb-2">
-        <button
-          onClick={() => setIsBottomSheetOpen(false)}
-          className="text-xs px-3 py-1 pb-2 rounded-full bg-surface shadow-neu-sm text-[rgba(243,232,255,0.5)]"
-        >閉じる</button>
-      </div>
-      <div className="px-4 pb-8">
-        <DetailPanel
-          artist={selectedArtist}
-          onAddFavoriteArtist={artist => {
-            addFavorite(artist, explorationHistory)
-            setToast(`★ ${artist.name} をお気に入りに追加しました`)
-            setTimeout(() => setToast(''), 1000)
-            setIsBottomSheetOpen(false)
-          }}
-          isFavorite={isFavorite}
-          onTrackSelect={setCurrentTrack}
-          onhandleNextLayerDig={() => {
-            handleNextLayerDig()
-            setIsBottomSheetOpen(false)
-          }}
-          isDigging={isDigging}
-          lastDigArtist={lastDigArtist}
-        />
-      </div>
-    </div>
-  </>
-)}
+      {isBottomSheetOpen && (
+        <>
+          <div
+            className="md:hidden bottom-sheet-overlay"
+            onClick={() => setIsBottomSheetOpen(false)}
+          />
+          <div
+            className="md:hidden bottom-sheet-container"
+          >
+            <div className="flex justify-center">
+              <div className="bottom-sheet-handle" />
+            </div>
+            <div className="flex justify-end px-4 pb-2">
+              <button
+                onClick={() => setIsBottomSheetOpen(false)}
+                className="bottom-sheet-close-btn"
+              >
+                閉じる
+              </button>
+            </div>
+            <div className="px-4 pb-8">
+              <DetailPanel
+                artist={selectedArtist}
+                onAddFavoriteArtist={artist => {
+                  addFavorite(artist, explorationHistory)
+                  setToast(`★ ${artist.name} をお気に入りに追加しました`)
+                  setTimeout(() => setToast(''), 1000)
+                  setIsBottomSheetOpen(false)
+                }}
+                isFavorite={isFavorite}
+                onTrackSelect={setCurrentTrack}
+                onhandleNextLayerDig={() => {
+                  handleNextLayerDig()
+                  setIsBottomSheetOpen(false)
+                }}
+                isDigging={isDigging}
+                lastDigArtist={lastDigArtist}
+              />
+            </div>
+          </div>
+        </>
+      )}
 
       {/* トースト通知 */}
       {toast && (

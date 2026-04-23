@@ -1,0 +1,77 @@
+/* モバイル（767px以下）での調整 */
+@media (max-width: 767px) {
+
+  /* アーティストの頭文字2文字が入った大きな四角いボックスを非表示にする */
+  /* 特徴：w-full（幅一杯）で aspect-square（正方形）の div */
+  .aspect-square.flex.items-center.justify-center.text-4xl {
+    display: none !important;
+  }
+
+  /* ボックスを消した後の余白を調整（必要であれば） */
+  .flex.flex-col.gap-4 {
+    gap: 0.5rem !important; /* 間隔を狭くしてコンパクトに */
+  }
+
+  /* アーティスト名（text-lg）の上下余白を調整 */
+  p.text-lg.font-bold {
+    margin-bottom: 1rem !important;
+    font-size: 1.25rem !important; /* 名前はしっかり見えるように少し大きく */
+  }
+}
+
+/* モバイルボトムシートのベーススタイル */
+.bottom-sheet-container {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 50;
+  border-top-left-radius: 1.5rem; /* rounded-t-3xl */
+  border-top-right-radius: 1.5rem;
+  overflow-y: auto;
+  height: 75vh;
+  background: #2d1b69;
+  box-shadow: 0 -8px 30px rgba(0, 0, 0, 0.5);
+  transition: transform 0.3s ease-out;
+}
+
+/* ボトムシートの背景オーバーレイ */
+.bottom-sheet-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  background-color: rgba(0, 0, 0, 0.5); /* bg-black/50 */
+}
+
+/* つまみ（ハンドル）部分 */
+.bottom-sheet-handle {
+  width: 2.5rem; /* w-10 */
+  height: 0.25rem; /* h-1 */
+  border-radius: 9999px; /* rounded-full */
+  background-color: rgba(243, 232, 255, 0.3);
+  margin: 0.75rem auto 0.25rem; /* pt-3 pb-1相当 */
+}
+
+/* 閉じるボタン */
+.bottom-sheet-close-btn {
+  font-size: 0.75rem; /* text-xs */
+  padding: 0.25rem 0.75rem 0.5rem; /* px-3 py-1 pb-2 */
+  border-radius: 9999px;
+  background-color: var(--color-surface, #3b248a);
+  color: rgba(243, 232, 255, 0.5);
+  box-shadow: var(--shadow-neu-sm);
+}
+
+/* モバイル時のパディング調整 */
+@media (max-width: 767px) {
+  .flex-1 {
+    width: 100%;
+  }
+  
+  /* トーストの位置調整 */
+  .fixed.bottom-6 {
+    bottom: 2rem;
+    width: 90%;
+    text-align: center;
+  }
+}

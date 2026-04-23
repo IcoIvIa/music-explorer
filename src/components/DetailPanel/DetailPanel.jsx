@@ -101,13 +101,14 @@ function DetailPanel({
   // JSX
 
   return (
-    <div className="flex flex-col gap-4 p-6 rounded-2xl h-full bg-surface shadow-neu"
+    <div className="flex flex-col gap-4 p-6 rounded-2xl h-full bg-surface shadow-neu min-w-0 overflow-hidden"
     
     >
 
       {/* アーティスト情報 */}
+      <div className="min-w-0">
       <ArtistInfo artist={fullArtistData || artist} />
-
+      </div>
       {/* 人気曲一覧 */}
       {isLoading
         ? <p className="text-xs text-[rgba(243,232,255,0.3)]">読み込み中...</p>

@@ -5,7 +5,7 @@
 function ArtistInfo({ artist }) {
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex flex-col gap-4 min-w-0">
       {/* アーティスト画像 */}
       {/* {artist.image && artist.image[3]?.['#text'] ? (
         //画像がある場合
