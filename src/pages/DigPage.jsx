@@ -145,6 +145,7 @@ function DigPage() {
           >
             さらに深く掘り下げよう
           </p>
+          
           <TutorialModal
             isOpen={isTutorialOpen}
             onClose={() => setIsTutorialOpen(false)}

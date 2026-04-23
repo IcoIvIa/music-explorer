@@ -43,7 +43,7 @@ function FavoriteItem({ artist, onArtistClick, onRemove }) {
             <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-full flex items-center justify-center text-xs font-bold flex-shrink-0 bg-surface shadow-neu-inset-sm text-[#f9a8d4]">
 
-                    {/*  アーティスト名のイニシャルを表示（時間があれば画像に変える） */}
+                    {/*  アーティスト名のイニシャルを表示*/}
                     {artist.name.slice(0, 2).toUpperCase()}
                 </div>
                 <p className="text-sm font-medium text-[#f3e8ff]">{artist.name}</p>
@@ -131,8 +131,8 @@ function FavoritesModal({ isOpen, onClose, favorites, removeFavorite, exploratio
                     ))
                 )}
 
-                <p className="text-xs tracking-widest text-[#f3e8ff]">
-                    アーティスト名をクリックすると,そのアーティストにたどり着いた足跡を確認することができます。
+                <p className="text-xs tracking-widest text-[#f9a8d4]">
+                    アーティスト名をクリックすると、そのアーティストにたどり着いた足跡を確認することができます。
                 </p>
             </div>
         </div>

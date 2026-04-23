@@ -100,7 +100,7 @@ function HistoryPage() {
       {/* 戻るボタン */}
       <button
         onClick={() => window.close()}
-        className="mb-12 text-xs tracking-widest px-6 py-3 transition-all active:scale-95 relative z-10" // z-10でコンテンツを最前面に
+        className="mb-12 text-xs tracking-widest px-6 py-3 transition-all active:scale-95 relative z-10"
         style={{
           background: base.bg,
           color: base.textColorMuted,
@@ -111,7 +111,7 @@ function HistoryPage() {
         もどる
       </button>
 
-      <div className="max-w-xl relative z-10"> {/* z-10でコンテンツを最前面に */}
+      <div className="max-w-xl relative z-10">
         <header className="mb-16 border-l-4 pl-6" style={{ borderColor: base.textColorMuted }}>
           <h1 className="text-4xl font-black tracking-tighter uppercase mb-2">
             {name}
