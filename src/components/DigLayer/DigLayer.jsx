@@ -61,6 +61,7 @@ function WaveDivider({colorBottom }) {
               artist={artist}
               layerColor={layerColor}
               onArtistClick={onArtistClick}
+              isSelected={artist.name === selectedArtist?.name}
             />
           ))}
         </div>
