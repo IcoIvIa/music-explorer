@@ -6,12 +6,11 @@ import {getLayerColor} from '../../utils/getLayerColor'
  * <svg　viewBox***  描画領域等を設定
  * <path d=**** 上部に波線、下部に直線をつくりその間を塗りつぶす。
  *  <path d=*** 波形のベジェ曲線（C240,60　以下続く）で波を描き、L1440,60 L0,60 Z で下部を直線で閉じて塗りつぶす
- *  @param {string} colorTop：（使っていない、削除の際はDigLayer.jsx の呼び出し側も修正）
  * @returns 
  * SVG要素
  * 
  */
-function WaveDivider({ colorTop, colorBottom }) {
+function WaveDivider({colorBottom }) {
   return (
     <svg
       viewBox="0 0 1440 60"
@@ -70,7 +69,6 @@ function WaveDivider({ colorTop, colorBottom }) {
       {/* 波形の区切り */}
       <div style={{ background: layerColor.bg }}>
         <WaveDivider
-          colorTop={layerColor.bg}
           colorBottom={nextLayerColor.bg}
         />
       </div>

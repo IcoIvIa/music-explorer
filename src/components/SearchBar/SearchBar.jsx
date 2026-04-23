@@ -29,7 +29,7 @@ function SearchBar({ query, handleInputChange, handleSearch, suggestions, handle
                 className="flex-1 bg-transparent outline-none text-sm text-[#f3e8ff]"
             />
 
-            {/* サジェストリストの表示条件。候補が存在する場合のみ、絶対配置(absolute)でリストを表示する*/}
+            {/* サジェストリストの表示条件。候補が存在する場合のみ、絶対配置でリストを表示する*/}
             {suggestions.length > 0 && (
                 <ul className="absolute top-full left-0 mt-2 w-full bg-[#2d1b69] border border-[#4c1d95] rounded-xl overflow-hidden shadow-2xl z-50">
 

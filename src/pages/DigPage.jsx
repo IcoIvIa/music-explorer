@@ -81,12 +81,12 @@ function DigPage() {
    * @param {object} clickedArtist 
    * 現在のlayersに次の階層（depth: layers.length + 1）のアーティスト情報を追加
    */
-  async function handleArtistClick(clickedArtist,) {
+  async function handleArtistClick(clickedArtist) {
 
 
     setSelectedArtist(clickedArtist) // 選択中のアーティストを更新
 
-    setExplorationHistory([...prev, clickedArtist.name])
+    setExplorationHistory(prev => [...prev, clickedArtist.name])
 
 
   }
@@ -157,7 +157,7 @@ function DigPage() {
       />
 
       {/* 左エリア（探索） */}
-      <div className="flex-1 min-w-0 flex flex-col style={{ background: '#0d0820' }}">
+      <div className="flex-1 min-w-0 flex flex-col "style={{ background: '#0d0820' }}>
 
 
 

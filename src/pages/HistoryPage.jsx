@@ -44,14 +44,14 @@ function HistoryItem({ artistName, index, totalSteps }) {
 }
 
 /**
- * 探索履歴ページ：右上に「お気に入りイエロー」のレンズフレアと太陽絵文字を追加
+ * 探索履歴ページ：右上にレンズフレアと太陽絵文字
  */
 function HistoryPage() {
   const name = new URLSearchParams(window.location.search).get('name') || '不明'
   const frozenHistory = JSON.parse(localStorage.getItem('frozenHistory') || '[]')
 
   const base = getLayerColor(1)      // 1層目の色（開始）
-  const targetColor = getLayerColor(19) // 19層目の色（サザンあたりの色）
+  const targetColor = getLayerColor(19) // 19層目の色
 
   // ☆ お気に入りのカラー（#fde68a）をフレアと太陽の色として採用
   const flareColor = '#fde68a';
@@ -61,8 +61,7 @@ function HistoryPage() {
       className="min-h-screen p-8 relative overflow-hidden" 
       style={{ 
         /**
-         * ハイブリッド背景設定：
-         * ベースの「1〜19層グラデーション」の上に、右上の「ほんのりイエローフレア」を重ねる。
+         * ベースの「1〜19層グラデーション」の上に、右上のイエローフレア
          */
         background: `
           radial-gradient(circle at 95% 5%, ${flareColor}26 0%, ${flareColor}00 50%),
@@ -74,7 +73,6 @@ function HistoryPage() {
       }}
     >
       {/*太陽演出、光源要素。
-         強力なブラーと発光（boxShadow）を与える。
       */}
       <div 
         className="absolute top-[-50px] right-[-50px] w-64 h-64 rounded-full opacity-30 pointer-events-none"
@@ -86,8 +84,7 @@ function HistoryPage() {
       />
 
       {/*
-         太陽の絵文字配置
-         右上に固定し、フレアの中心に。光に溶け込ませるための調整を施す。
+         太陽の絵文字
       */}
       <div 
         className="absolute top-[20px] right-[20px] text-5xl opacity-80 pointer-events-none"
