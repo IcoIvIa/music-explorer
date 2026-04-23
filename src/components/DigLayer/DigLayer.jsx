@@ -54,7 +54,7 @@ function WaveDivider({colorBottom }) {
         </p>
 
         {/* アーティストカード一覧 */}
-        <div className="flex gap-3 flex-wrap">
+        <div className="flex gap-3 flex-wrap md:justify-start justify-center">
           {layer.artists.map((artist, cardIndex) => (
             <ArtistCard
               key={artist.id}

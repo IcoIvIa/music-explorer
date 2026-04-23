@@ -25,6 +25,8 @@ function DigPage() {
   const [isDigging, setIsDigging] = useState(false)
   const [lastDigArtist, setLastDigArtist] = useState(null)
   const [toast, setToast] = useState('')
+  //　＊レスポンシブデザイン用
+  const [isBottomSheetOpen, setIsBottomSheetOpen] = useState(false)
   const [tutorialStep, setTutorialStep] = useState(1)
   const [isTutorialOpen, setIsTutorialOpen] = useState(
     () => localStorage.getItem('hasSeenTutorial') === null
@@ -39,6 +41,7 @@ function DigPage() {
   function handleArtistClick(clickedArtist) {
     setSelectedArtist(clickedArtist)
     setExplorationHistory(prev => [...prev, clickedArtist.name])
+    setIsBottomSheetOpen(true)
   }
 
   // DIG（次の層を掘る）
@@ -157,7 +160,7 @@ function DigPage() {
 
       {/* 右エリア（詳細パネル） */}
       <div
-        className="w-80 p-6 sticky top-0 h-screen rounded-l-xl"
+        className="hidden md:block w-80 p-6 sticky top-0 h-screen rounded-l-xl"
       >
         <DetailPanel
           artist={selectedArtist}
@@ -169,6 +172,49 @@ function DigPage() {
           lastDigArtist={lastDigArtist}
         />
       </div>
+
+      {/* ★ モバイル用ボトムシート */}
+{isBottomSheetOpen && (
+  <>
+    <div
+      className="md:hidden fixed inset-0 z-40 bg-black/50"
+      onClick={() => setIsBottomSheetOpen(false)}
+    />
+    <div
+      className="md:hidden fixed bottom-0 inset-x-0 z-50 rounded-t-3xl overflow-y-auto"
+      style={{ height: '75vh', background: '#2d1b69', boxShadow: '0 -8px 30px rgba(0,0,0,0.5)' }}
+    >
+      <div className="flex justify-center pt-3 pb-1">
+        <div className="w-10 h-1 rounded-full bg-[rgba(243,232,255,0.3)]" />
+      </div>
+      <div className="flex justify-end px-4 pb-2">
+        <button
+          onClick={() => setIsBottomSheetOpen(false)}
+          className="text-xs px-3 py-1 pb-2 rounded-full bg-surface shadow-neu-sm text-[rgba(243,232,255,0.5)]"
+        >閉じる</button>
+      </div>
+      <div className="px-4 pb-8">
+        <DetailPanel
+          artist={selectedArtist}
+          onAddFavoriteArtist={artist => {
+            addFavorite(artist, explorationHistory)
+            setToast(`★ ${artist.name} をお気に入りに追加しました`)
+            setTimeout(() => setToast(''), 1000)
+            setIsBottomSheetOpen(false)
+          }}
+          isFavorite={isFavorite}
+          onTrackSelect={setCurrentTrack}
+          onhandleNextLayerDig={() => {
+            handleNextLayerDig()
+            setIsBottomSheetOpen(false)
+          }}
+          isDigging={isDigging}
+          lastDigArtist={lastDigArtist}
+        />
+      </div>
+    </div>
+  </>
+)}
 
       {/* トースト通知 */}
       {toast && (

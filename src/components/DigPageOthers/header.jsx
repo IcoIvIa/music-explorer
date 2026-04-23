@@ -16,20 +16,20 @@ function Header({ setIsFavoritesOpen, layers, setSelectedArtist, artistName, cur
     const navigate = useNavigate()
 
     return (
-        <div 
+        <div
             className="px-6 pt-10 pb-6 sticky top-0 z-30"
-            style={{ 
+            style={{
                 background: 'linear-gradient(180deg, #5b21b6 0%, #4c1d95 100%)',
-                boxShadow: '0 4px 20px rgba(13, 8, 32, 0.3)' 
+                boxShadow: '0 4px 20px rgba(13, 8, 32, 0.3)'
             }}
         >
             {/* 2カラムグリッド：左＝ロゴ/アーティスト名、右＝バッジ群/AudioPlayer */}
-            <div className="grid grid-cols-[1fr_auto] gap-y-4 items-center">
-                
+            <div className="hidden md:grid grid grid-cols-[1fr_auto] gap-y-4 items-center">
+
                 {/* 上段左：ロゴ */}
-                <h1 
+                <h1
                     onClick={() => navigate('/')}
-                    className="text-2xl font-bold tracking-widest text-[#f3e8ff] cursor-pointer" 
+                    className="text-2xl font-bold tracking-widest text-[#f3e8ff] cursor-pointer"
                     style={{ textShadow: '0 0 20px rgba(243,232,255,0.3)' }}
                 >
                     DIG<span className="text-[#f9a8d4]">GER</span>
@@ -65,6 +65,48 @@ function Header({ setIsFavoritesOpen, layers, setSelectedArtist, artistName, cur
                 {/* 下段右：AudioPlayer */}
                 <AudioPlayer currentTrack={currentTrack} />
             </div>
+
+            {/* ★ モバイル用縦積みレイアウト */}
+            <div className="md:hidden flex flex-col gap-3">
+
+                {/* 1行目：ロゴ＋バッジ群 */}
+                <div className="flex items-center justify-between">
+                    <h1
+                        onClick={() => navigate('/')}
+                        className="text-xl font-bold tracking-widest text-[#f3e8ff] cursor-pointer"
+                        style={{ textShadow: '0 0 20px rgba(243,232,255,0.3)' }}
+                    >
+                        DIG<span className="text-[#f9a8d4]">GER</span>
+                    </h1>
+                    <div className="flex items-center gap-2">
+                        <button
+                            onClick={() => setIsFavoritesOpen(true)}
+                            className="text-xs tracking-widest px-3 py-1.5 rounded-full bg-[#4c1d95] text-[#fde68a] shadow-neu-header cursor-pointer"
+                        >
+                            ★ お気に入り
+                        </button>
+                        <div className="text-xs tracking-widest px-3 py-1.5 rounded-full bg-[#4c1d95] text-[#bef264] shadow-neu-header">
+                            {layers.length}層目
+                        </div>
+                    </div>
+                </div>
+
+                {/* 2行目：探索中アーティスト名 */}
+                <p
+                    className="text-xs cursor-pointer flex items-center min-w-0 text-[rgba(243,232,255,0.5)]"
+                    onClick={() => setSelectedArtist(formatArtist({ name: artistName }, 0))}
+                >
+                    <span className="text-base font-bold tracking-widest pr-[2px] truncate" title={artistName}>
+                        {artistName}
+                    </span>
+                    <span className="shrink-0 ml-1">を探索中</span>
+                </p>
+
+                {/* 3行目：AudioPlayer */}
+                <AudioPlayer currentTrack={currentTrack} />
+
+            </div>
+
         </div>
     )
 }
