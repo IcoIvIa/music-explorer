@@ -112,7 +112,7 @@ function DigPage() {
       <div className="flex-1 min-w-0 flex flex-col" style={{ background: '#0d0820' }}>
 
         {/* ヘッダー */}
-        <div style={{ borderRadius: '0 0 4px 4px', }}>
+        <div className="sticky top-0 z-30" style={{ borderRadius: '0 0 4px 4px' }}>
           <Header
             setIsFavoritesOpen={setIsFavoritesOpen}
             layers={layers}
