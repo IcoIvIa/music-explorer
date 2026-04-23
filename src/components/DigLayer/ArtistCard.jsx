@@ -3,13 +3,12 @@
  * @param {object} artist アーティスト情報
  * @param {object} layerColor 層の色テーマ
  * @param {function} onArtistClick カードクリック時の処理
- * @param {Boolean}isDeepest　DigLayer.jsxから受け取る値。DigPage.jsxに渡すための中継地点
  */
 
-function ArtistCard({ artist, layerColor, onArtistClick ,isDeepest, isSelected}) {
+function ArtistCard({ artist, layerColor, onArtistClick , isSelected}) {
     return (
         <button
-        onClick={() => onArtistClick(artist, isDeepest)}
+        onClick={() => onArtistClick(artist,)}
       className="flex items-center gap-3 px-4 py-3 rounded-2xl text-left transition-all min-w-[160px] max-w-[240px] overflow-hidden"
 style={{
   background: layerColor.bg,

@@ -186,10 +186,9 @@ DigLayer.jsx
 │
 └── ArtistCard.jsx × 5
       props: artist, layerColor, onArtistClick,
-             isDeepest(layer.depth === currentDepth),
              isSelected(artist.name === selectedArtist?.name)
       │
-      └── onClick() → onArtistClick(artist, isDeepest)
+      └── onClick() → onArtistClick(artist,)
                        ↑ DigPage.jsx の handleArtistClick へ
 ```
  

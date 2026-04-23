@@ -32,14 +32,14 @@ function WaveDivider({ colorTop, colorBottom }) {
  * 1層分のアーティストカード一覧と、上記の関数を利用して波線を表示するコンポーネント
  * @param {object} layer 層の情報（depth, artists）
  * @param {function} onArtistClick アーティストカードクリック時の処理
- * @param {number} currentDepth 最終的にhandleArtistClickで最深層がどうかを判断するために、ここで、現在の層を取得する。isDeepest={layer.depth === currentDepthでブーリン値に変換してArtistCard.jsxに渡す。
+ * @param {number} currentDepth 最終的にhandleArtistClickで最深層がどうかを判断するために、ここで、現在の層を取得する。
  */
  function DigLayer({ layer, onArtistClick ,currentDepth ,selectedArtist}) {
     const layerColor = getLayerColor(layer.depth)
     const nextLayerColor =getLayerColor(layer.depth + 1)
     
     return (
-    <div key={layer.depth}>
+    <div>
       {/* 層のコンテンツ */}
       <div
         className="px-6 py-8"
@@ -61,7 +61,6 @@ function WaveDivider({ colorTop, colorBottom }) {
               artist={artist}
               layerColor={layerColor}
               onArtistClick={onArtistClick}
-              isDeepest={layer.depth === currentDepth}
               isSelected={artist.name === selectedArtist?.name}
             />
           ))}

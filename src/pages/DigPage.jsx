@@ -79,15 +79,14 @@ function DigPage() {
    * genre: '',         Last.fmはジャンルを返さないので空文字（余裕があれば実装）
    * image: artist.image[2]['#text'] // large画像のURLを取り出す
    * @param {object} clickedArtist 
-   * @param {Boolean} isDeepest クリックした層が最深部がどうか判断。tureで層を追加。
    * 現在のlayersに次の階層（depth: layers.length + 1）のアーティスト情報を追加
    */
-  async function handleArtistClick(clickedArtist, isDeepest) {
+  async function handleArtistClick(clickedArtist,) {
 
 
     setSelectedArtist(clickedArtist) // 選択中のアーティストを更新
 
-    setExplorationHistory([...explorationHistory, clickedArtist.name])
+    setExplorationHistory([...prev, clickedArtist.name])
 
 
   }
